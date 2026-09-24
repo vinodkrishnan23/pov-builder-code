@@ -1,0 +1,22 @@
+# Secrets — never committed
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+
+# Node (generated POV frontends are never committed here, but just in case)
+node_modules/
+
+# Local scratch
+*.log
+.DS_Store

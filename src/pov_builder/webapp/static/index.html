@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pov-builder console</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --border: #e2e2e6;
+    --text: #1c1c1f;
+    --text-dim: #6b6b74;
+    --accent: #1a5fd6;
+    --accent-fg: #ffffff;
+    --system-bg: #eef1f6;
+    --gate-bg: #fff8e8;
+    --gate-border: #e8c766;
+    --done-bg: #eafaf0;
+    --done-border: #7fd39a;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17181c;
+      --panel: #202127;
+      --border: #33343b;
+      --text: #ececef;
+      --text-dim: #9a9aa2;
+      --system-bg: #262832;
+      --gate-bg: #2c2712;
+      --gate-border: #6b5a1f;
+      --done-bg: #16261d;
+      --done-border: #2f6b45;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  header h1 { font-size: 16px; margin: 0; font-weight: 600; }
+  header .sub { color: var(--text-dim); font-size: 12px; }
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 20px 16px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .msg {
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+  }
+  .msg.system { background: var(--system-bg); }
+  .msg.gate { background: var(--gate-bg); border-color: var(--gate-border); }
+  .msg.done { background: var(--done-bg); border-color: var(--done-border); }
+  .msg h2 { font-size: 13px; margin: 0 0 8px; text-transform: uppercase; letter-spacing: .03em; color: var(--text-dim); }
+  .msg h2.gate-title { color: #8a6d0f; }
+  @media (prefers-color-scheme: dark) { .msg h2.gate-title { color: #e0c15a; } }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  input[type=text], textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    resize: vertical;
+  }
+  textarea { min-height: 140px; }
+  .field { margin-bottom: 12px; }
+  button {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+  button.primary { background: var(--accent); color: var(--accent-fg); }
+  button.primary:disabled { opacity: .5; cursor: default; }
+  button.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .node-log { font-family: var(--mono); font-size: 12px; color: var(--text-dim); white-space: pre-wrap; }
+  .node-log .ok { color: #2a9d4a; }
+  details { margin-top: 10px; }
+  summary { cursor: pointer; font-size: 12px; color: var(--accent); }
+  pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    overflow-x: auto;
+    max-height: 420px;
+  }
+  .spinner {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin-right: 6px;
+    vertical-align: -1px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .thread-id { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+  .error { color: #c62828; font-size: 13px; }
+
+  /* Concise curated summary (initial_spec gate) */
+  .spec-summary { display: flex; flex-direction: column; gap: 14px; margin: 10px 0; }
+  .summary-block h3 {
+    font-size: 12px; margin: 0 0 6px; text-transform: uppercase; letter-spacing: .03em;
+    color: var(--text-dim); font-weight: 700;
+  }
+  .summary-block p { margin: 0; }
+  .summary-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .summary-list li { padding-left: 2px; }
+  .badge {
+    display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .03em; padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: 1px;
+  }
+  .badge-explicit { background: #dcf3e3; color: #1e7d3c; }
+  .badge-inferred { background: #dfe8fb; color: #2a55b8; }
+  .badge-assumed  { background: #fbeccb; color: #96650b; }
+  .badge-unknown  { background: #eee; color: #777; }
+  /* pov_reviewer's own status/severity — deliberately distinct hues from
+     the EXPLICIT/INFERRED/ASSUMED/UNKNOWN classification badges above, so
+     the two kinds of badge are never visually confused. */
+  .badge-status-pass { background: #dcf3e3; color: #1e7d3c; }
+  .badge-status-warn { background: #fde9c8; color: #a15b06; }
+  .badge-status-fail { background: #fbdada; color: #a3231f; }
+  .badge-sev-low    { background: #eee; color: #777; }
+  .badge-sev-medium { background: #fde9c8; color: #a15b06; }
+  .badge-sev-high   { background: #fbdada; color: #a3231f; }
+  @media (prefers-color-scheme: dark) {
+    .badge-explicit { background: #163b23; color: #6fd696; }
+    .badge-inferred { background: #172746; color: #8fb0f5; }
+    .badge-assumed  { background: #3a2c0f; color: #e3b45b; }
+    .badge-unknown  { background: #333; color: #aaa; }
+    .badge-status-pass { background: #163b23; color: #6fd696; }
+    .badge-status-warn { background: #3a2c0f; color: #e3b45b; }
+    .badge-status-fail { background: #3a1414; color: #f08c8c; }
+    .badge-sev-low    { background: #333; color: #aaa; }
+    .badge-sev-medium { background: #3a2c0f; color: #e3b45b; }
+    .badge-sev-high   { background: #3a1414; color: #f08c8c; }
+  }
+  .reviewer-notes h3 { display: flex; align-items: center; gap: 4px; }
+  ul.issue-list { list-style: none; padding-left: 0; }
+  .review-issue {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--panel);
+  }
+  .review-issue.issue-accepted { border-color: var(--done-border); background: var(--done-bg); }
+  .review-issue.issue-rejected { opacity: .5; }
+  .issue-controls { gap: 6px; }
+  button.btn-sm { padding: 3px 10px; font-size: 11px; }
+
+  /* Generic "pretty" formatted rendering of arbitrary JSON, used instead
+     of a raw JSON.stringify dump in every "full details" section. */
+  .pretty-root { font-size: 13px; }
+  dl.pretty-obj { margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  dl.pretty-obj > dt {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+    color: var(--text-dim); margin: 0;
+  }
+  dl.pretty-obj > dd { margin: 2px 0 0; }
+  dl.pretty-obj dl.pretty-obj {
+    border-left: 2px solid var(--border); padding-left: 10px; margin-top: 4px;
+  }
+  ul.pretty-list { margin: 2px 0 0; padding-left: 16px; display: flex; flex-direction: column; gap: 8px; }
+  ul.pretty-list > li { padding-left: 2px; }
+  .muted { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<header>
+  <h1>pov-builder</h1>
+  <span class="sub">local test console — human approval gates</span>
+</header>
+<main id="main"></main>
+
+<script>
+const main = document.getElementById("main");
+let threadId = null;
+let busy = false;
+
+function el(tag, opts = {}, children = []) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(opts)) {
+    if (k === "class") e.className = v;
+    else if (k === "html") e.innerHTML = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  for (const c of [].concat(children)) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+  return e;
+}
+
+// ---------------------------------------------------------------------
+// Generic "pretty" rendering of arbitrary JSON — nested labeled sections
+// instead of a raw JSON.stringify dump. Used for every "full details"
+// view (initial_spec, technical_spec, and the final done artifacts).
+// ---------------------------------------------------------------------
+function labelize(key) {
+  return key.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function isEmpty(v) {
+  return v === null || v === undefined || v === "" || (Array.isArray(v) && v.length === 0) ||
+    (typeof v === "object" && !Array.isArray(v) && Object.keys(v).length === 0);
+}
+
+function prettyValue(value) {
+  if (isEmpty(value)) return el("span", { class: "muted" }, "—");
+  if (typeof value === "boolean") return document.createTextNode(value ? "Yes" : "No");
+  if (typeof value !== "object") return document.createTextNode(String(value));
+
+  if (Array.isArray(value)) {
+    const list = el("ul", { class: "pretty-list" });
+    for (const item of value) list.appendChild(el("li", {}, prettyValue(item)));
+    return list;
+  }
+  return prettyObject(value);
+}
+
+function prettyObject(obj) {
+  const entries = Object.entries(obj).filter(([, v]) => !isEmpty(v));
+  if (entries.length === 0) return el("span", { class: "muted" }, "—");
+  const dl = el("dl", { class: "pretty-obj" });
+  for (const [k, v] of entries) {
+    dl.appendChild(el("dt", {}, labelize(k)));
+    dl.appendChild(el("dd", {}, prettyValue(v)));
+  }
+  return dl;
+}
+
+function prettyRender(value) {
+  return el("div", { class: "pretty-root" }, [prettyValue(value)]);
+}
+
+// ---------------------------------------------------------------------
+// Concise curated summary for the initial_spec gate — the fields worth
+// reviewing at a glance, not the entire InitialPOVSpec.
+// ---------------------------------------------------------------------
+// ---------------------------------------------------------------------
+// Reviewer Notes — pov_reviewer's own critique (POVReviewResult), shown
+// AT the initial_spec gate so it actually informs the approve/revise
+// decision instead of only appearing in the final done summary.
+// ---------------------------------------------------------------------
+function statusBadgeClass(status) {
+  if (status === "PASS") return "badge-status-pass";
+  if (status === "FAIL") return "badge-status-fail";
+  return "badge-status-warn"; // PASS_WITH_WARNINGS
+}
+
+// Feedback textarea lines are tracked one-per-accepted-issue, so toggling
+// Accept/Reject on one issue never disturbs anything the human typed by
+// hand or accepted from a different issue.
+function feedbackLineFor(issue) {
+  return `- ${issue.recommended_action || issue.description || ""}`;
+}
+
+function addFeedbackLine(feedbackBox, line) {
+  const lines = feedbackBox.value.split("\n").filter(Boolean);
+  if (!lines.includes(line)) lines.push(line);
+  feedbackBox.value = lines.join("\n");
+}
+
+function removeFeedbackLine(feedbackBox, line) {
+  const lines = feedbackBox.value.split("\n").filter(l => l !== line);
+  feedbackBox.value = lines.join("\n");
+}
+
+// `rejectedNotes` is a plain array shared across every issue in one gate
+// render (see renderReviewerNotes/renderGate) — sent to the server on
+// "Request revision" alongside the feedback text, so pov_reviewer can be
+// told NOT to re-flag something the human already dismissed. Tracked by
+// the issue's own description text (not its id — pov_reviewer has no
+// memory across rounds, so next round's issue ids don't correspond to
+// this round's at all; the description is the only stable handle).
+function reviewIssueItem(issue, feedbackBox, rejectedNotes) {
+  const sev = (issue.severity || "medium").toLowerCase();
+  const line = feedbackLineFor(issue);
+  const note = issue.description || issue.recommended_action || "";
+  let state = null; // null | "accepted" | "rejected"
+
+  const li = el("li", { class: "review-issue" });
+  const body = el("div", {}, [
+    el("span", { class: `badge badge-sev-${sev}` }, (issue.severity || "?").toUpperCase()),
+    document.createTextNode(" " + (issue.description || "")),
+    issue.recommended_action ? el("div", { class: "muted", style: "margin-top:2px" }, `→ ${issue.recommended_action}`) : "",
+  ]);
+
+  const acceptBtn = el("button", { class: "secondary btn-sm", onclick: onAccept }, "Accept");
+  const rejectBtn = el("button", { class: "secondary btn-sm", onclick: onReject }, "Reject");
+  const controls = el("div", { class: "row issue-controls" }, [acceptBtn, rejectBtn]);
+
+  function setState(next) {
+    if (state === "accepted") removeFeedbackLine(feedbackBox, line);
+    if (state === "rejected") {
+      const i = rejectedNotes.indexOf(note);
+      if (i !== -1) rejectedNotes.splice(i, 1);
+    }
+    li.classList.remove("issue-accepted", "issue-rejected");
+    state = state === next ? null : next; // click again to undo
+    if (state === "accepted") {
+      addFeedbackLine(feedbackBox, line);
+      li.classList.add("issue-accepted");
+    } else if (state === "rejected") {
+      if (note && !rejectedNotes.includes(note)) rejectedNotes.push(note);
+      li.classList.add("issue-rejected");
+    }
+    acceptBtn.textContent = state === "accepted" ? "Accepted ✓" : "Accept";
+    rejectBtn.textContent = state === "rejected" ? "Rejected ✕" : "Reject";
+  }
+  function onAccept() { setState("accepted"); }
+  function onReject() { setState("rejected"); }
+
+  li.appendChild(body);
+  li.appendChild(controls);
+  return li;
+}
+
+function renderReviewerNotes(review, feedbackBox, rejectedNotes) {
+  if (!review) return null;
+  const statusPill = el("span", { class: `badge ${statusBadgeClass(review.status)}` }, review.status || "UNKNOWN");
+  const children = [el("h3", {}, ["Reviewer Notes ", statusPill])];
+  if (review.issues && review.issues.length) {
+    const ul = el("ul", { class: "summary-list issue-list" });
+    for (const issue of review.issues) ul.appendChild(reviewIssueItem(issue, feedbackBox, rejectedNotes));
+    children.push(ul);
+    children.push(el("p", { class: "muted", style: "margin-top:6px" },
+      "Accept an issue to add its recommendation to the feedback box below. Reject tells the reviewer " +
+      "to stop flagging it on the next round. Click \"Request revision\" to submit either."));
+  } else {
+    children.push(el("p", { class: "muted" }, "No issues flagged."));
+  }
+  return el("div", { class: "summary-block reviewer-notes" }, children);
+}
+
+function requirementItem(r) {
+  const cls = (r.classification || "unknown").toLowerCase();
+  return el("span", {}, [
+    document.createTextNode(r.description || ""),
+    el("span", { class: `badge badge-${cls}` }, r.classification || "UNKNOWN"),
+  ]);
+}
+
+function summaryBlock(title, items, renderItem) {
+  if (!items || items.length === 0) return null;
+  const ul = el("ul", { class: "summary-list" });
+  for (const item of items) ul.appendChild(el("li", {}, renderItem(item)));
+  return el("div", { class: "summary-block" }, [el("h3", {}, title), ul]);
+}
+
+function renderInitialSpecSummary(spec) {
+  const container = el("div", { class: "spec-summary" });
+  if (spec.executive_summary) {
+    container.appendChild(el("div", { class: "summary-block" }, [
+      el("h3", {}, "Executive Summary"),
+      el("p", {}, spec.executive_summary),
+    ]));
+  }
+  const blocks = [
+    summaryBlock("Business Objectives", spec.business_objectives, requirementItem),
+    summaryBlock("Use Cases", spec.use_cases, u => `${u.title} — ${u.description}`),
+    summaryBlock("Functional Requirements", spec.functional_requirements, requirementItem),
+    summaryBlock("AI / GenAI Requirements", spec.ai_genai_requirements, requirementItem),
+    summaryBlock("Success Criteria", spec.success_criteria, requirementItem),
+  ];
+  for (const b of blocks) if (b) container.appendChild(b);
+  return container;
+}
+
+function nodeLogBlock(log) {
+  const lines = log.map(n => `${n.status === "AgentRunStatus.SUCCEEDED" ? "✓" : "…"} ${n.node}`).join("\n");
+  return el("div", { class: "node-log" }, lines || "(no phases ran yet)");
+}
+
+function renderStart() {
+  main.innerHTML = "";
+  const emailField = el("input", { type: "email", id: "user-email", placeholder: "you@example.com" });
+  const povNameField = el("input", { type: "text", id: "pov-name", placeholder: "e.g. order-status-chatbot" });
+  const transcriptField = el("textarea", { id: "transcript", placeholder: "Paste a real meeting transcript here…" });
+  const startBtn = el("button", { class: "primary", onclick: onStart }, "Start POV");
+  const status = el("div", { class: "error", id: "start-error" });
+
+  main.appendChild(el("div", { class: "msg" }, [
+    el("h2", {}, "New POV"),
+    el("div", { class: "field" }, [el("label", {}, "Your email (required)"), emailField]),
+    el("div", { class: "field" }, [el("label", {}, "POV name (required)"), povNameField]),
+    el("div", { class: "field" }, [el("label", {}, "Transcript"), transcriptField]),
+    el("div", { class: "row" }, [startBtn, status]),
+  ]));
+}
+
+function appendSpinner(label) {
+  const node = el("div", { class: "msg system", id: "spinner-msg" }, [
+    el("div", {}, [el("span", { class: "spinner" }), label]),
+    el("div", { class: "node-log", id: "spinner-log" }, ""),
+  ]);
+  main.appendChild(node);
+  node.scrollIntoView({ behavior: "smooth", block: "end" });
+  return node;
+}
+
+function removeSpinner() {
+  const n = document.getElementById("spinner-msg");
+  if (n) n.remove();
+}
+
+// ---------------------------------------------------------------------
+// Live status polling — GET /status is read-only and never invokes the
+// graph, so it's safe to poll on an interval while a long resume/continue
+// action is in flight (real subprocess/browser work in
+// integration_validator, possibly several repair-loop rounds, can take
+// many minutes). Also doubles as recovery: if the ORIGINAL request drops
+// client-side (a real thing that already happened once this session) but
+// the server kept working, the next poll tick notices the thread reached
+// a real terminal state and renders it — whichever of {the original
+// fetch, a poll tick} notices first "wins" via `makeSettler`, so the
+// other is a no-op instead of double-rendering.
+// ---------------------------------------------------------------------
+let pollTimer = null;
+let activeRequestId = 0; // bumped on every new action so a stale poll from a PRIOR action can't affect the UI
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+async function fetchStatus(id) {
+  const r = await fetch(`/api/runs/${id}/status`);
+  if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
+  return r.json();
+}
+
+function updateSpinnerLog(resp) {
+  const box = document.getElementById("spinner-log");
+  if (box) box.textContent = nodeLogBlock(resp.node_log || []).textContent;
+}
+
+function isTerminalStatus(status) {
+  return status.status === "waiting_approval" || (status.status === "done" && (status.next_nodes || []).length === 0);
+}
+
+function startPolling(id, requestId, settle) {
+  stopPolling();
+  pollTimer = setInterval(async () => {
+    if (requestId !== activeRequestId) { stopPolling(); return; }
+    try {
+      const status = await fetchStatus(id);
+      updateSpinnerLog(status);
+      if (isTerminalStatus(status)) settle(status);
+    } catch (e) {
+      // transient poll failure — ignore, the next tick tries again
+    }
+  }, 4000);
+}
+
+// Wraps handleResponse so only the FIRST of {the original fetch
+// resolving, a poll tick noticing a terminal state} actually renders.
+function makeSettler(requestId) {
+  const state = { done: false, settle: null };
+  state.settle = (resp) => {
+    if (state.done || requestId !== activeRequestId) return;
+    state.done = true;
+    stopPolling();
+    removeSpinner();
+    busy = false;
+    handleResponse(resp);
+  };
+  return state;
+}
+
+// Shown when a resume/continue request errors out client-side (e.g. a
+// browser/network timeout on a long real run) — the server may well have
+// kept working regardless (checkpointed progress isn't lost), so this
+// offers a way to check without guessing, and a way to move it forward
+// again if it's genuinely paused with nothing pending.
+function renderRecoveryError(message) {
+  const box = el("div", { class: "msg error" }, [
+    el("div", {}, message),
+    el("div", { class: "row", style: "margin-top:8px" }, [
+      el("button", { class: "secondary", onclick: onCheckStatus }, "Check status"),
+      el("button", { class: "primary", onclick: onContinueClick }, "Continue"),
+    ]),
+  ]);
+  main.appendChild(box);
+  main.scrollTo({ top: main.scrollHeight, behavior: "smooth" });
+
+  async function onCheckStatus() {
+    box.remove();
+    try {
+      const status = await fetchStatus(threadId);
+      if (isTerminalStatus(status)) {
+        handleResponse(status);
+      } else {
+        renderProgress(status);
+        renderRecoveryError("Still in progress on the server, and no approval is pending — Continue to resume it, or check again shortly.");
+      }
+    } catch (err) {
+      main.appendChild(el("div", { class: "msg error" }, `Error checking status: ${err.message}`));
+    }
+  }
+
+  async function onContinueClick() {
+    box.remove();
+    await continueRun();
+  }
+}
+
+function renderProgress(resp) {
+  main.appendChild(el("div", { class: "msg system" }, [
+    el("div", { class: "row" }, [
+      el("span", {}, "Progress"),
+      el("span", { class: "thread-id" }, `thread_id=${resp.thread_id}`),
+    ]),
+    nodeLogBlock(resp.node_log),
+  ]));
+}
+
+function renderGate(resp) {
+  const gate = resp.gate;
+  const isInitial = gate.gate === "initial_spec";
+  const detailKey = isInitial ? "initial_spec" : "technical_spec";
+  const detail = gate[detailKey];
+
+  const feedbackBox = el("textarea", { placeholder: "What should change? (required to request a revision)" });
+  const rejectedNotes = []; // shared across every issue rendered below — see reviewIssueItem
+  const approveBtn = el("button", { class: "primary", onclick: () => onDecision("approve") }, "Approve ✓");
+  const reviseBtn = el("button", { class: "secondary", onclick: () => onDecision("revise", feedbackBox.value, rejectedNotes) }, "Request revision");
+  const err = el("div", { class: "error" });
+
+  let body;
+  if (isInitial && detail) {
+    body = el("div", {}, [renderReviewerNotes(gate.review_result, feedbackBox, rejectedNotes), renderInitialSpecSummary(detail)].filter(Boolean));
+  } else {
+    body = el("div", {}, gate.summary || "(no summary)");
+  }
+
+  main.appendChild(el("div", { class: "msg gate", id: "gate-msg" }, [
+    el("h2", { class: "gate-title" }, `Approval needed — ${gate.gate} (${gate.user_email ?? "?"} / ${gate.pov_name ?? "?"})`),
+    body,
+    el("details", {}, [
+      el("summary", {}, "More details"),
+      prettyRender(detail),
+    ]),
+    el("div", { class: "field", style: "margin-top:12px" }, [el("label", {}, "Feedback (for revision)"), feedbackBox]),
+    el("div", { class: "row" }, [approveBtn, reviseBtn, err]),
+  ]));
+  main.scrollTo({ top: main.scrollHeight, behavior: "smooth" });
+
+  async function onDecision(decision, feedback, rejected) {
+    if (decision === "revise" && !feedback.trim()) {
+      err.textContent = "Feedback is required to request a revision.";
+      return;
+    }
+    document.getElementById("gate-msg").remove();
+    await resume(decision, feedback, rejected);
+  }
+}
+
+function renderDone(resp) {
+  const f = resp.final;
+  const section = (title, obj) => el("details", {}, [
+    el("summary", {}, title),
+    prettyRender(obj),
+  ]);
+  main.appendChild(el("div", { class: "msg done" }, [
+    el("h2", {}, "POV run complete"),
+    el("div", { class: "summary-block" }, [
+      el("h3", {}, "Initial Spec — Summary"),
+      renderInitialSpecSummary(f.initial_spec || {}),
+    ]),
+    section("initial_spec (full)", f.initial_spec),
+    section("review_result", f.review_result),
+    section("technical_spec", f.technical_spec),
+    section("validation_report", f.validation_report),
+    section("repository", f.repository),
+    section("readme_status", f.readme_status),
+  ]));
+  main.appendChild(el("div", { class: "msg" }, [
+    el("button", { class: "primary", onclick: () => { stopPolling(); activeRequestId += 1; threadId = null; renderStart(); } }, "Start another POV"),
+  ]));
+  main.scrollTo({ top: main.scrollHeight, behavior: "smooth" });
+}
+
+function handleResponse(resp) {
+  removeSpinner();
+  threadId = resp.thread_id;
+  renderProgress(resp);
+  if (resp.status === "waiting_approval") renderGate(resp);
+  else renderDone(resp);
+}
+
+async function onStart() {
+  if (busy) return;
+  const user_email = document.getElementById("user-email").value.trim();
+  const pov_name = document.getElementById("pov-name").value.trim();
+  const transcript = document.getElementById("transcript").value;
+  const errBox = document.getElementById("start-error");
+  errBox.textContent = "";
+  if (!user_email) { errBox.textContent = "Your email is required."; return; }
+  if (!pov_name) { errBox.textContent = "POV name is required."; return; }
+  if (!transcript.trim()) { errBox.textContent = "Paste a transcript first."; return; }
+
+  busy = true;
+  stopPolling();
+  activeRequestId += 1;
+  appendSpinner("Running transcript_analyzer → pov_reviewer… (can take up to a minute)");
+  try {
+    const r = await fetch("/api/runs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transcript, user_email, pov_name }),
+    });
+    if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
+    handleResponse(await r.json());
+  } catch (e) {
+    removeSpinner();
+    main.appendChild(el("div", { class: "msg error" }, `Error: ${e.message}`));
+  } finally {
+    busy = false;
+  }
+}
+
+async function resume(decision, feedback, rejected) {
+  if (busy) return;
+  busy = true;
+  activeRequestId += 1;
+  const requestId = activeRequestId;
+  appendSpinner(decision === "approve" ? "Continuing…" : "Re-running with your feedback…");
+  const settler = makeSettler(requestId);
+  startPolling(threadId, requestId, settler.settle);
+  try {
+    const r = await fetch(`/api/runs/${threadId}/resume`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ decision, feedback: feedback || null, rejected_notes: (rejected && rejected.length) ? rejected : null }),
+    });
+    if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
+    settler.settle(await r.json());
+  } catch (e) {
+    stopPolling();
+    if (!settler.done && requestId === activeRequestId) {
+      removeSpinner();
+      busy = false;
+      renderRecoveryError(`Error: ${e.message} — the server may still be working; check status or continue.`);
+    }
+  }
+}
+
+// For a thread paused with pending work but NO approval gate waiting
+// (e.g. mid-repair-loop) — POST /continue instead of /resume, since
+// there's no interrupt() for Command(resume=...) to target. Reachable
+// from renderRecoveryError's "Continue" button after a request drops.
+async function continueRun() {
+  if (busy || !threadId) return;
+  busy = true;
+  activeRequestId += 1;
+  const requestId = activeRequestId;
+  appendSpinner("Continuing from the last checkpoint…");
+  const settler = makeSettler(requestId);
+  startPolling(threadId, requestId, settler.settle);
+  try {
+    const r = await fetch(`/api/runs/${threadId}/continue`, { method: "POST" });
+    if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
+    settler.settle(await r.json());
+  } catch (e) {
+    stopPolling();
+    if (!settler.done && requestId === activeRequestId) {
+      removeSpinner();
+      busy = false;
+      renderRecoveryError(`Error: ${e.message}`);
+    }
+  }
+}
+
+renderStart();
+</script>
+</body>
+</html>
