@@ -1,0 +1,181 @@
+openapi: 3.1.0
+info:
+  title: Untitled POC API
+  version: 0.1.0
+servers:
+  - url: /api
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      x-user-story-ids: [UC-1, UC-2, UC-3, UC-4]
+      responses:
+        '200':
+          description: Database is connected
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, db]
+                properties:
+                  status: {type: string, const: ok}
+                  db: {type: string, const: connected}
+  /tenants:
+    get:
+      operationId: listTenants
+      x-user-story-ids: [UC-1, UC-2, UC-3, UC-4]
+      parameters:
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+        - in: query
+          name: cursor
+          schema: {type: string}
+      responses:
+        '200':
+          description: Paginated results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: {type: array, items: {type: object}}
+                  nextCursor: {type: [string, 'null']}
+  /documents:
+    get:
+      operationId: listDocuments
+      x-user-story-ids: [UC-1, UC-2, UC-3, UC-4]
+      parameters:
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+        - in: query
+          name: cursor
+          schema: {type: string}
+      responses:
+        '200':
+          description: Paginated results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: {type: array, items: {type: object}}
+                  nextCursor: {type: [string, 'null']}
+  /chunk_profiles:
+    get:
+      operationId: listChunkProfiles
+      x-user-story-ids: [UC-1, UC-2, UC-3, UC-4]
+      parameters:
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+        - in: query
+          name: cursor
+          schema: {type: string}
+      responses:
+        '200':
+          description: Paginated results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: {type: array, items: {type: object}}
+                  nextCursor: {type: [string, 'null']}
+  /chunks:
+    get:
+      operationId: listChunks
+      x-user-story-ids: [UC-1, UC-2, UC-3, UC-4]
+      parameters:
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+        - in: query
+          name: cursor
+          schema: {type: string}
+      responses:
+        '200':
+          description: Paginated results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: {type: array, items: {type: object}}
+                  nextCursor: {type: [string, 'null']}
+  /queries:
+    get:
+      operationId: listQueries
+      x-user-story-ids: [UC-1, UC-2, UC-3, UC-4]
+      parameters:
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+        - in: query
+          name: cursor
+          schema: {type: string}
+      responses:
+        '200':
+          description: Paginated results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: {type: array, items: {type: object}}
+                  nextCursor: {type: [string, 'null']}
+  /benchmark_runs:
+    get:
+      operationId: listBenchmarkRuns
+      x-user-story-ids: [UC-1, UC-2, UC-3, UC-4]
+      parameters:
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+        - in: query
+          name: cursor
+          schema: {type: string}
+      responses:
+        '200':
+          description: Paginated results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: {type: array, items: {type: object}}
+                  nextCursor: {type: [string, 'null']}
+  /query_results:
+    get:
+      operationId: listQueryResults
+      x-user-story-ids: [UC-1, UC-2, UC-3, UC-4]
+      parameters:
+        - in: query
+          name: limit
+          schema: {type: integer, minimum: 1, maximum: 100, default: 20}
+        - in: query
+          name: cursor
+          schema: {type: string}
+      responses:
+        '200':
+          description: Paginated results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: {type: array, items: {type: object}}
+                  nextCursor: {type: [string, 'null']}
+components:
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: {type: string}
+            message: {type: string}
