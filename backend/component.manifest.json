@@ -1,0 +1,33 @@
+{
+  "component": "backend",
+  "runtime": "node20",
+  "workdir": "backend",
+  "entrypoints": {
+    "install": [
+      "npm install --omit=dev"
+    ],
+    "build": [
+      "npm run build"
+    ],
+    "start": [
+      "npm run start"
+    ],
+    "healthcheck": {
+      "type": "http",
+      "url": "http://localhost:8080/api/health",
+      "expect": 200
+    }
+  },
+  "env": {
+    "required": [
+      "MONGODB_URI",
+      "PORT"
+    ],
+    "optional": [
+      "API_KEY"
+    ]
+  },
+  "ports": [
+    8080
+  ]
+}
