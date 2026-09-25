@@ -1,0 +1,4494 @@
+{
+  "requirements": {
+    "business_objectives": {
+      "BO-1": {
+        "description": "Evaluate AI capabilities that combine structured and unstructured data.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-5"
+          ],
+          "endpoints": [
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "BO-2": {
+        "description": "Find a scalable lower-cost solution for unstructured or hybrid structured/unstructured retrieval workloads.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks",
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-5",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments",
+            "hybridSearchDocuments",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "document_search_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "BO-3": {
+        "description": "Reduce storage and indexing cost for embeddings/search workloads compared with the current Elastic-based approach.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks",
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "BO-4": {
+        "description": "Achieve very low-latency retrieval over large document sets for downstream agent use.",
+        "mapped_to": {
+          "collections": [
+            "chunks",
+            "documents",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-6",
+            "QP-11"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments",
+            "searchAgentMemory",
+            "createQueryResult",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "document_search_page",
+            "agent_memory_search_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "BO-5": {
+        "description": "Validate vendor claims with real demos, benchmarks, comparisons, and hands-on proof before making decisions.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "queries",
+            "query_results",
+            "chunk_profiles"
+          ],
+          "query_patterns": [
+            "QP-8",
+            "QP-9",
+            "QP-10",
+            "QP-11",
+            "QP-12",
+            "QP-14"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "listBenchmarkRuns",
+            "getBenchmarkRunDetail",
+            "createQuery",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_list_page",
+            "benchmark_run_detail_page",
+            "benchmark_queries_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      }
+    },
+    "functional_requirements": {
+      "FR-1": {
+        "description": "Support document search over unstructured content provided by customers, including PDFs and other uploaded document types.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-4",
+            "QP-5"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listRetrievalReadyDocuments",
+            "vectorSearchDocuments",
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_list_page",
+            "document_search_page"
+          ]
+        }
+      },
+      "FR-2": {
+        "description": "Support use cases that combine structured and unstructured data in retrieval workflows.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-5"
+          ],
+          "endpoints": [
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "FR-3": {
+        "description": "Support agent memory/context retrieval from conversation-derived documents.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-6"
+          ],
+          "endpoints": [
+            "createDocument",
+            "searchAgentMemory"
+          ],
+          "pages": [
+            "document_create_page",
+            "agent_memory_search_page"
+          ]
+        }
+      },
+      "FR-4": {
+        "description": "Support retrieval and re-ranking so relevant results can be surfaced to agents.",
+        "mapped_to": {
+          "collections": [
+            "chunks",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-5",
+            "QP-6",
+            "QP-10"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments",
+            "hybridSearchDocuments",
+            "searchAgentMemory",
+            "createQueryResult",
+            "getBenchmarkQueryComparison"
+          ],
+          "pages": [
+            "document_search_page",
+            "agent_memory_search_page",
+            "benchmark_query_comparison_page"
+          ]
+        }
+      },
+      "FR-5": {
+        "description": "Handle large-scale vector retrieval across approximately one million documents in a single index.",
+        "mapped_to": {
+          "collections": [
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-4"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "FR-6": {
+        "description": "Support a POV/demo workflow where users can upload documents during the session and ask questions against them.",
+        "mapped_to": {
+          "collections": [
+            "tenants",
+            "documents",
+            "chunk_profiles",
+            "queries",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-2",
+            "QP-3",
+            "QP-4",
+            "QP-5",
+            "QP-13"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listRetrievalReadyDocuments",
+            "listDocumentIngestStatuses",
+            "listChunkProfiles",
+            "createQuery",
+            "vectorSearchDocuments",
+            "hybridSearchDocuments",
+            "listRecentAdHocQueries"
+          ],
+          "pages": [
+            "document_create_page",
+            "ingest_status_page",
+            "document_search_page",
+            "query_history_page",
+            "tenant_overview_page"
+          ]
+        }
+      },
+      "FR-7": {
+        "description": "Demonstrate multiple chunking strategies for document processing, including fixed-length, recursive, semantic, and contextual chunking.",
+        "mapped_to": {
+          "collections": [
+            "chunk_profiles",
+            "chunks",
+            "benchmark_runs"
+          ],
+          "query_patterns": [
+            "QP-3",
+            "QP-7",
+            "QP-14"
+          ],
+          "endpoints": [
+            "listChunkProfiles",
+            "createChunkProfile",
+            "getDocumentChunksByProfile",
+            "getBenchmarkRunDetail"
+          ],
+          "pages": [
+            "chunk_profile_list_page",
+            "chunk_profile_create_page",
+            "document_chunks_page",
+            "benchmark_run_detail_page"
+          ]
+        }
+      },
+      "FR-8": {
+        "description": "Support isolated per-customer SaaS deployments in addition to some multi-tenant services.",
+        "mapped_to": {
+          "collections": [
+            "tenants"
+          ],
+          "query_patterns": [],
+          "endpoints": [
+            "createTenant",
+            "listTenants",
+            "getTenant",
+            "updateTenant"
+          ],
+          "pages": [
+            "tenant_list_page",
+            "tenant_create_page",
+            "tenant_overview_page",
+            "tenant_settings_page"
+          ]
+        }
+      },
+      "FR-9": {
+        "description": "Support tagging or access association at the document level for context records tied to users and tenants.",
+        "mapped_to": {
+          "collections": [
+            "documents"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-6"
+          ],
+          "endpoints": [
+            "createDocument",
+            "updateDocument",
+            "searchAgentMemory",
+            "vectorSearchDocuments"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_edit_page",
+            "agent_memory_search_page",
+            "document_detail_page"
+          ]
+        }
+      }
+    },
+    "ai_genai_requirements": {
+      "AI-1": {
+        "description": "Provide vector search capabilities for unstructured document retrieval.",
+        "mapped_to": {
+          "collections": [
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-5"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments",
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "AI-2": {
+        "description": "Enable embeddings generation and retrieval workflows for customer documents.",
+        "mapped_to": {
+          "collections": [
+            "chunks",
+            "documents"
+          ],
+          "query_patterns": [
+            "QP-4"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page",
+            "ingest_status_page"
+          ]
+        }
+      },
+      "AI-3": {
+        "description": "Support PDF/document ingestion where users may upload unpredictable document types and still expect useful retrieval outcomes.",
+        "mapped_to": {
+          "collections": [
+            "documents"
+          ],
+          "query_patterns": [
+            "QP-2"
+          ],
+          "endpoints": [
+            "createDocument",
+            "updateDocument",
+            "listDocumentIngestStatuses"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_edit_page",
+            "ingest_status_page"
+          ]
+        }
+      },
+      "AI-4": {
+        "description": "Support retrieval accuracy benchmarking using customer-provided questions/ground truth.",
+        "mapped_to": {
+          "collections": [
+            "queries",
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-9",
+            "QP-10",
+            "QP-11"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQuery",
+            "createQueryResult",
+            "listBenchmarkQueries",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_queries_page",
+            "benchmark_query_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "AI-5": {
+        "description": "Evaluate retrieval quality using top-k based measures up to top 20.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-11"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "AI-6": {
+        "description": "Compare retrieval precision, recall, and latency during the evaluation.",
+        "mapped_to": {
+          "collections": [
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "AI-7": {
+        "description": "Potentially support multimodal retrieval in the future, but it is not part of the requested benchmark flow for the next demo.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "out_of_scope_in_current_authoritative_artifacts"
+        }
+      },
+      "AI-8": {
+        "description": "Support agent conversation/session data as a backend database use case.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "not_modeled_per_authoritative_data_model_scope_note"
+        }
+      }
+    },
+    "use_cases": {
+      "UC-1": {
+        "description": "Document Search over Unstructured Content",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunk_profiles",
+            "chunks",
+            "queries"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-2",
+            "QP-3",
+            "QP-4",
+            "QP-5",
+            "QP-7",
+            "QP-13"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listRetrievalReadyDocuments",
+            "listDocumentIngestStatuses",
+            "listChunkProfiles",
+            "getDocumentChunksByProfile",
+            "createQuery",
+            "vectorSearchDocuments",
+            "hybridSearchDocuments",
+            "listRecentAdHocQueries"
+          ],
+          "pages": [
+            "document_list_page",
+            "document_create_page",
+            "document_detail_page",
+            "document_search_page",
+            "document_chunks_page",
+            "query_history_page",
+            "ingest_status_page"
+          ]
+        }
+      },
+      "UC-2": {
+        "description": "Agent Memory Retrieval",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks",
+            "queries"
+          ],
+          "query_patterns": [
+            "QP-6",
+            "QP-13"
+          ],
+          "endpoints": [
+            "createDocument",
+            "createQuery",
+            "searchAgentMemory",
+            "listRecentAdHocQueries"
+          ],
+          "pages": [
+            "agent_memory_search_page",
+            "document_create_page",
+            "query_history_page"
+          ]
+        }
+      },
+      "UC-3": {
+        "description": "Hybrid Structured and Unstructured Retrieval",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-5"
+          ],
+          "endpoints": [
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "UC-4": {
+        "description": "POV Benchmark Evaluation",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "queries",
+            "query_results",
+            "chunk_profiles",
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-3",
+            "QP-7",
+            "QP-8",
+            "QP-9",
+            "QP-10",
+            "QP-11",
+            "QP-12",
+            "QP-14"
+          ],
+          "endpoints": [
+            "listRetrievalReadyDocuments",
+            "listChunkProfiles",
+            "getDocumentChunksByProfile",
+            "createBenchmarkRun",
+            "listBenchmarkRuns",
+            "getBenchmarkRunDetail",
+            "updateBenchmarkRun",
+            "createQuery",
+            "listBenchmarkQueries",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_list_page",
+            "benchmark_run_create_page",
+            "benchmark_run_detail_page",
+            "benchmark_queries_page",
+            "benchmark_query_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page",
+            "document_chunks_page"
+          ]
+        }
+      }
+    },
+    "success_criteria": {
+      "SC-1": {
+        "description": "Show that document search works well on customer-like documents uploaded during the demo.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-2",
+            "QP-4",
+            "QP-5"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listDocumentIngestStatuses",
+            "vectorSearchDocuments",
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_create_page",
+            "ingest_status_page",
+            "document_search_page"
+          ]
+        }
+      },
+      "SC-2": {
+        "description": "Demonstrate retrieval at the right latency for the document-search use case.",
+        "mapped_to": {
+          "collections": [
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11"
+          ],
+          "endpoints": [
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "SC-3": {
+        "description": "Provide side-by-side comparison against a baseline or current system to determine whether there is significant difference.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkQueryComparison"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_query_comparison_page"
+          ]
+        }
+      },
+      "SC-4": {
+        "description": "Demonstrate raw retrieval accuracy and speed using the same documents across systems.",
+        "mapped_to": {
+          "collections": [
+            "queries",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11"
+          ],
+          "endpoints": [
+            "listBenchmarkQueries",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_queries_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "SC-5": {
+        "description": "Evaluate precision, recall, and latency metrics in the demo/POV.",
+        "mapped_to": {
+          "collections": [
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-11"
+          ],
+          "endpoints": [
+            "createQueryResult",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "SC-6": {
+        "description": "Assess top-k retrieval quality at top 1, 5, 10, and 20.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-11"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "SC-7": {
+        "description": "Validate that MongoDB/Voyage offers better results than the customer\u2019s current or simple baseline approach rather than merely matching it.",
+        "mapped_to": {
+          "collections": [
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_query_comparison_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "SC-8": {
+        "description": "Potential future success criterion: support around 400-500 concurrent requests, though this is not the immediate focus of the POV.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "not_explicitly_designed_in_current_authoritative_artifacts"
+        }
+      }
+    },
+    "integrations": {
+      "INT-1": {
+        "description": "Integrate with or replace parts of the current Elastic/Elastic Cloud based search and embeddings workflow.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "INT-2": {
+        "description": "Coexist with Postgres, which is currently used as the application database and for some metadata.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "coexistence_only_not_directly_modeled"
+        }
+      },
+      "INT-3": {
+        "description": "Coexist with S3, which currently stores raw documents.",
+        "mapped_to": {
+          "collections": [
+            "documents"
+          ],
+          "query_patterns": [],
+          "endpoints": [
+            "createDocument",
+            "updateDocument",
+            "getDocument"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_edit_page",
+            "document_detail_page"
+          ]
+        }
+      },
+      "INT-4": {
+        "description": "Fit into environments that already use OpenSearch for some customer deployments/use cases.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "INT-5": {
+        "description": "Work within a multi-cloud environment across AWS, GCP, and/or other clouds.",
+        "mapped_to": {
+          "collections": [
+            "tenants"
+          ],
+          "query_patterns": [],
+          "endpoints": [
+            "createTenant",
+            "listTenants",
+            "getTenant",
+            "updateTenant"
+          ],
+          "pages": [
+            "tenant_list_page",
+            "tenant_create_page",
+            "tenant_settings_page"
+          ]
+        }
+      },
+      "INT-6": {
+        "description": "Potentially align with Vertex AI-based session management already in use for agents.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "not_directly_modeled_in_current_scope"
+        }
+      },
+      "INT-7": {
+        "description": "Support content originating from connectors such as Slack, Confluence, Jira, Google Sheets, CSVs, and PDFs.",
+        "mapped_to": {
+          "collections": [
+            "documents"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-2"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listRetrievalReadyDocuments",
+            "listDocumentIngestStatuses"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_list_page",
+            "ingest_status_page"
+          ]
+        }
+      }
+    }
+  },
+  "api_contract": {
+    "version": "1.0",
+    "pov_name": "ThoughtSpot MongoDB Atlas + Voyage Retrieval POV",
+    "principles": [
+      "Endpoints are limited to straightforward CRUD on the authoritative data model or direct wrappers around the authoritative query patterns.",
+      "No API is introduced for unsupported capabilities such as raw binary file storage, authentication/authorization subsystem management, or agent session database management beyond the modeled entities.",
+      "Tenant scope is explicit in nearly all endpoints because the data model and query patterns are tenant-scoped."
+    ],
+    "conventions": {
+      "base_path": "/api/v1",
+      "content_type": "application/json",
+      "tenant_identifier": "tenantId path parameter carrying tenants._id",
+      "pagination": {
+        "style": "limit_only",
+        "note": "Only limit-based pagination is guaranteed because authoritative query patterns define limit but no skip/cursor pattern."
+      },
+      "timestamps": "ISO-8601 strings",
+      "object_id": "24-char hex string"
+    },
+    "endpoints": [
+      {
+        "operationId": "createTenant",
+        "method": "POST",
+        "path": "/api/v1/tenants",
+        "purpose": "Create a tenant record used as the isolation boundary for demo documents, queries, and benchmark runs.",
+        "request": {
+          "body": {
+            "tenant_key": "string, required, unique",
+            "name": "string, required",
+            "deployment_model": "shared|isolated, optional",
+            "cloud": "aws|gcp|azure|other, optional",
+            "status": "active|inactive, required"
+          }
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "tenant": {
+              "_id": "objectId",
+              "tenant_key": "string",
+              "name": "string",
+              "deployment_model": "shared|isolated|null",
+              "cloud": "aws|gcp|azure|other|null",
+              "status": "active|inactive",
+              "created_at": "datetime",
+              "updated_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Missing required fields or invalid enum values."
+          },
+          {
+            "status": 409,
+            "code": "TENANT_KEY_CONFLICT",
+            "when": "tenant_key already exists."
+          }
+        ],
+        "backing": "CRUD insertOne on tenants"
+      },
+      {
+        "operationId": "listTenants",
+        "method": "GET",
+        "path": "/api/v1/tenants",
+        "purpose": "List tenants available in the POV environment.",
+        "request": {
+          "query": {
+            "status": "active|inactive, optional",
+            "limit": "integer, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "tenants": [
+              {
+                "_id": "objectId",
+                "tenant_key": "string",
+                "name": "string",
+                "deployment_model": "shared|isolated|null",
+                "cloud": "aws|gcp|azure|other|null",
+                "status": "active|inactive",
+                "created_at": "datetime",
+                "updated_at": "datetime"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Invalid query parameter values."
+          }
+        ],
+        "backing": "CRUD find on tenants"
+      },
+      {
+        "operationId": "getTenant",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}",
+        "purpose": "Retrieve one tenant by id.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "tenant": {
+              "_id": "objectId",
+              "tenant_key": "string",
+              "name": "string",
+              "deployment_model": "shared|isolated|null",
+              "cloud": "aws|gcp|azure|other|null",
+              "status": "active|inactive",
+              "created_at": "datetime",
+              "updated_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "INVALID_ID",
+            "when": "tenantId is not a valid ObjectId."
+          },
+          {
+            "status": 404,
+            "code": "TENANT_NOT_FOUND",
+            "when": "No tenant exists with the provided id."
+          }
+        ],
+        "backing": "CRUD findOne on tenants"
+      },
+      {
+        "operationId": "updateTenant",
+        "method": "PATCH",
+        "path": "/api/v1/tenants/{tenantId}",
+        "purpose": "Update mutable tenant metadata.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "body": {
+            "name": "string, optional",
+            "deployment_model": "shared|isolated, optional",
+            "cloud": "aws|gcp|azure|other, optional",
+            "status": "active|inactive, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "tenant": {
+              "_id": "objectId",
+              "tenant_key": "string",
+              "name": "string",
+              "deployment_model": "shared|isolated|null",
+              "cloud": "aws|gcp|azure|other|null",
+              "status": "active|inactive",
+              "created_at": "datetime",
+              "updated_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Invalid fields or enum values."
+          },
+          {
+            "status": 404,
+            "code": "TENANT_NOT_FOUND",
+            "when": "No tenant exists with the provided id."
+          },
+          {
+            "status": 409,
+            "code": "TENANT_KEY_IMMUTABLE",
+            "when": "Attempt to update tenant_key through this endpoint."
+          }
+        ],
+        "backing": "CRUD updateOne on tenants"
+      },
+      {
+        "operationId": "createDocument",
+        "method": "POST",
+        "path": "/api/v1/tenants/{tenantId}/documents",
+        "purpose": "Create a document metadata record for uploaded content or conversation-derived memory. Raw binary upload is out of scope; the API records metadata, extracted text when available, and ingest state.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "body": {
+            "document_type": "pdf|csv|google_sheet|text|slack_thread|confluence_page|jira_ticket|agent_memory|other, required",
+            "title": "string, optional",
+            "source_system": "upload|s3|slack|confluence|jira|google_sheets|csv|pdf|agent_conversation|other, required",
+            "source_uri": "string, optional",
+            "mime_type": "string, optional",
+            "file_name": "string, optional",
+            "raw_text": "string, optional",
+            "structured_attributes": "object, optional",
+            "access": {
+              "user_ids": [
+                "objectId, optional"
+              ],
+              "group_ids": [
+                "objectId, optional"
+              ]
+            },
+            "ingest_status": "uploaded|text_extracted|chunked|embedded|failed, required",
+            "ingest_errors": [
+              "object, optional"
+            ],
+            "is_agent_memory": "boolean, required"
+          }
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "document": {
+              "_id": "objectId",
+              "tenant_id": "objectId",
+              "document_type": "string",
+              "title": "string|null",
+              "source_system": "string",
+              "source_uri": "string|null",
+              "mime_type": "string|null",
+              "file_name": "string|null",
+              "raw_text": "string|null",
+              "structured_attributes": "object|null",
+              "access": {
+                "user_ids": [
+                  "objectId"
+                ],
+                "group_ids": [
+                  "objectId"
+                ]
+              },
+              "ingest_status": "string",
+              "ingest_errors": [
+                "object"
+              ],
+              "is_agent_memory": "boolean",
+              "created_at": "datetime",
+              "updated_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Missing required fields or invalid enum values."
+          },
+          {
+            "status": 404,
+            "code": "TENANT_NOT_FOUND",
+            "when": "tenantId does not exist."
+          }
+        ],
+        "backing": "CRUD insertOne on documents"
+      },
+      {
+        "operationId": "listRetrievalReadyDocuments",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/documents",
+        "purpose": "List retrieval-ready documents for a tenant demo session.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "query": {
+            "ready_only": "boolean, optional, defaults true",
+            "document_types": "comma-separated enum list, optional",
+            "source_systems": "comma-separated enum list, optional",
+            "created_after": "datetime, optional",
+            "limit": "integer, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "documents": [
+              {
+                "_id": "objectId",
+                "title": "string|null",
+                "file_name": "string|null",
+                "document_type": "string",
+                "source_system": "string",
+                "source_uri": "string|null",
+                "structured_attributes": "object|null",
+                "is_agent_memory": "boolean",
+                "created_at": "datetime"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Invalid tenant id or filter values."
+          },
+          {
+            "status": 404,
+            "code": "TENANT_NOT_FOUND",
+            "when": "tenantId does not exist."
+          }
+        ],
+        "backing": "QP-1 when ready_only=true; otherwise straightforward CRUD find on documents constrained by tenant_id"
+      },
+      {
+        "operationId": "listDocumentIngestStatuses",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/documents/ingest-status",
+        "purpose": "Inspect document ingest pipeline status and failures for a tenant.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "query": {
+            "created_after": "datetime, optional",
+            "limit": "integer, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "documents": [
+              {
+                "_id": "objectId",
+                "title": "string|null",
+                "file_name": "string|null",
+                "document_type": "string",
+                "source_system": "string",
+                "ingest_status": "uploaded|text_extracted|chunked|embedded|failed",
+                "ingest_errors": [
+                  "object"
+                ],
+                "updated_at": "datetime"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Invalid tenant id or query parameters."
+          },
+          {
+            "status": 404,
+            "code": "TENANT_NOT_FOUND",
+            "when": "tenantId does not exist."
+          }
+        ],
+        "backing": "QP-2"
+      },
+      {
+        "operationId": "getDocument",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/documents/{documentId}",
+        "purpose": "Retrieve a single document record including ingest metadata and structured attributes.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required",
+            "documentId": "objectId, required"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "document": {
+              "_id": "objectId",
+              "tenant_id": "objectId",
+              "document_type": "string",
+              "title": "string|null",
+              "source_system": "string",
+              "source_uri": "string|null",
+              "mime_type": "string|null",
+              "file_name": "string|null",
+              "raw_text": "string|null",
+              "structured_attributes": "object|null",
+              "access": {
+                "user_ids": [
+                  "objectId"
+                ],
+                "group_ids": [
+                  "objectId"
+                ]
+              },
+              "ingest_status": "string",
+              "ingest_errors": [
+                "object"
+              ],
+              "is_agent_memory": "boolean",
+              "created_at": "datetime",
+              "updated_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "INVALID_ID",
+            "when": "tenantId or documentId is invalid."
+          },
+          {
+            "status": 404,
+            "code": "DOCUMENT_NOT_FOUND",
+            "when": "No document exists for the tenant with the provided id."
+          }
+        ],
+        "backing": "CRUD findOne on documents"
+      },
+      {
+        "operationId": "updateDocument",
+        "method": "PATCH",
+        "path": "/api/v1/tenants/{tenantId}/documents/{documentId}",
+        "purpose": "Update document metadata, ingest status, extracted text, or access tags as processing progresses.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required",
+            "documentId": "objectId, required"
+          },
+          "body": {
+            "title": "string, optional",
+            "source_uri": "string, optional",
+            "mime_type": "string, optional",
+            "file_name": "string, optional",
+            "raw_text": "string, optional",
+            "structured_attributes": "object, optional",
+            "access": {
+              "user_ids": [
+                "objectId, optional"
+              ],
+              "group_ids": [
+                "objectId, optional"
+              ]
+            },
+            "ingest_status": "uploaded|text_extracted|chunked|embedded|failed, optional",
+            "ingest_errors": [
+              "object, optional"
+            ]
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "document": {
+              "_id": "objectId",
+              "tenant_id": "objectId",
+              "document_type": "string",
+              "title": "string|null",
+              "source_system": "string",
+              "source_uri": "string|null",
+              "mime_type": "string|null",
+              "file_name": "string|null",
+              "raw_text": "string|null",
+              "structured_attributes": "object|null",
+              "access": {
+                "user_ids": [
+                  "objectId"
+                ],
+                "group_ids": [
+                  "objectId"
+                ]
+              },
+              "ingest_status": "string",
+              "ingest_errors": [
+                "object"
+              ],
+              "is_agent_memory": "boolean",
+              "created_at": "datetime",
+              "updated_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Invalid field names or enum values."
+          },
+          {
+            "status": 404,
+            "code": "DOCUMENT_NOT_FOUND",
+            "when": "No document exists for the tenant with the provided id."
+          }
+        ],
+        "backing": "CRUD updateOne on documents"
+      },
+      {
+        "operationId": "listChunkProfiles",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/chunk-profiles",
+        "purpose": "Retrieve active chunking strategies available for comparison in the POV.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "chunk_profiles": [
+              {
+                "_id": "objectId",
+                "name": "string",
+                "strategy": "fixed_length|recursive|semantic|contextual",
+                "parameters": "object|null",
+                "tenant_id": "objectId|null"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "INVALID_ID",
+            "when": "tenantId is invalid."
+          }
+        ],
+        "backing": "QP-3"
+      },
+      {
+        "operationId": "createChunkProfile",
+        "method": "POST",
+        "path": "/api/v1/tenants/{tenantId}/chunk-profiles",
+        "purpose": "Create a tenant-specific chunk profile for benchmark or demo comparisons.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "body": {
+            "name": "string, required",
+            "strategy": "fixed_length|recursive|semantic|contextual, required",
+            "parameters": "object, optional",
+            "is_active": "boolean, required"
+          }
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "chunk_profile": {
+              "_id": "objectId",
+              "tenant_id": "objectId",
+              "name": "string",
+              "strategy": "fixed_length|recursive|semantic|contextual",
+              "parameters": "object|null",
+              "is_active": "boolean",
+              "created_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Missing required fields or invalid enum values."
+          },
+          {
+            "status": 404,
+            "code": "TENANT_NOT_FOUND",
+            "when": "tenantId does not exist."
+          }
+        ],
+        "backing": "CRUD insertOne on chunk_profiles"
+      },
+      {
+        "operationId": "getDocumentChunksByProfile",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/documents/{documentId}/chunks",
+        "purpose": "Inspect ordered chunks for a document under a selected chunking strategy.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required",
+            "documentId": "objectId, required"
+          },
+          "query": {
+            "chunk_profile_id": "objectId, required"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "chunks": [
+              {
+                "_id": "objectId",
+                "document_id": "objectId",
+                "chunk_index": "integer",
+                "text": "string",
+                "token_count": "integer|null",
+                "char_count": "integer|null",
+                "chunk_profile": {
+                  "name": "string",
+                  "strategy": "fixed_length|recursive|semantic|contextual",
+                  "parameters": "object|null"
+                }
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Invalid ids or missing chunk_profile_id."
+          },
+          {
+            "status": 404,
+            "code": "DOCUMENT_NOT_FOUND",
+            "when": "Document not found for tenant."
+          }
+        ],
+        "backing": "QP-7 with an implementation-level tenant ownership check on the document before execution"
+      },
+      {
+        "operationId": "createQuery",
+        "method": "POST",
+        "path": "/api/v1/tenants/{tenantId}/queries",
+        "purpose": "Create an ad hoc or benchmark query record before or alongside retrieval execution.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "body": {
+            "benchmark_run_id": "objectId, optional",
+            "query_text": "string, required",
+            "query_type": "ad_hoc|benchmark, required",
+            "expected_answer_text": "string, optional",
+            "ground_truth_chunk_ids": [
+              "objectId, optional"
+            ],
+            "ground_truth_document_ids": [
+              "objectId, optional"
+            ],
+            "document_scope": {
+              "document_ids": [
+                "objectId, optional"
+              ],
+              "source_systems": [
+                "string, optional"
+              ],
+              "metadata_filters": "object, optional"
+            },
+            "created_by": "string, optional"
+          }
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "query": {
+              "_id": "objectId",
+              "tenant_id": "objectId",
+              "benchmark_run_id": "objectId|null",
+              "query_text": "string",
+              "query_type": "ad_hoc|benchmark",
+              "expected_answer_text": "string|null",
+              "ground_truth_chunk_ids": [
+                "objectId"
+              ],
+              "ground_truth_document_ids": [
+                "objectId"
+              ],
+              "document_scope": "object|null",
+              "created_by": "string|null",
+              "created_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Missing required fields, invalid enum values, or invalid scope shape."
+          },
+          {
+            "status": 404,
+            "code": "TENANT_NOT_FOUND",
+            "when": "tenantId does not exist."
+          },
+          {
+            "status": 404,
+            "code": "BENCHMARK_RUN_NOT_FOUND",
+            "when": "benchmark_run_id is provided but does not exist for the tenant."
+          }
+        ],
+        "backing": "CRUD insertOne on queries"
+      },
+      {
+        "operationId": "listRecentAdHocQueries",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/queries/history",
+        "purpose": "Show recent ad hoc query history for a tenant demo session.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "query": {
+            "created_after": "datetime, optional",
+            "limit": "integer, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "queries": [
+              {
+                "_id": "objectId",
+                "query_text": "string",
+                "document_scope": "object|null",
+                "created_by": "string|null",
+                "created_at": "datetime"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Invalid tenant id or query parameters."
+          }
+        ],
+        "backing": "QP-13"
+      },
+      {
+        "operationId": "listBenchmarkQueries",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/benchmark-runs/{benchmarkRunId}/queries",
+        "purpose": "List the benchmark question set and ground truth for a benchmark run.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required",
+            "benchmarkRunId": "objectId, required"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "queries": [
+              {
+                "_id": "objectId",
+                "query_text": "string",
+                "expected_answer_text": "string|null",
+                "ground_truth_chunk_ids": [
+                  "objectId"
+                ],
+                "ground_truth_document_ids": [
+                  "objectId"
+                ],
+                "document_scope": "object|null",
+                "created_at": "datetime"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "INVALID_ID",
+            "when": "tenantId or benchmarkRunId is invalid."
+          },
+          {
+            "status": 404,
+            "code": "BENCHMARK_RUN_NOT_FOUND",
+            "when": "Run does not exist for tenant."
+          }
+        ],
+        "backing": "QP-9"
+      },
+      {
+        "operationId": "vectorSearchDocuments",
+        "method": "POST",
+        "path": "/api/v1/tenants/{tenantId}/search/vector",
+        "purpose": "Run semantic vector retrieval over chunks for document search.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "body": {
+            "query_text": "string, required for traceability even when query_embedding is supplied",
+            "query_embedding": [
+              "float, optional if embedding generated server-side"
+            ],
+            "chunk_profile_id": "objectId, required",
+            "document_ids": [
+              "objectId, optional"
+            ],
+            "top_k": "integer, required",
+            "num_candidates": "integer, required",
+            "user_id": "objectId, optional",
+            "group_ids": [
+              "objectId, optional"
+            ],
+            "query_id": "objectId, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "query_id": "objectId|null",
+            "retrieval_mode": "vector",
+            "results": [
+              {
+                "rank": "integer",
+                "chunk_id": "objectId",
+                "document_id": "objectId",
+                "score": "number",
+                "text_snippet": "string",
+                "source_title": "string|null",
+                "document_type": "string",
+                "source_system": "string",
+                "structured_attributes": "object|null"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Missing required inputs, invalid ids, or neither query_embedding nor server-side embedding capability is available."
+          },
+          {
+            "status": 404,
+            "code": "CHUNK_PROFILE_NOT_FOUND",
+            "when": "chunk_profile_id is invalid for the tenant/global scope."
+          },
+          {
+            "status": 422,
+            "code": "EMBEDDING_GENERATION_FAILED",
+            "when": "Server-side embedding generation fails."
+          }
+        ],
+        "backing": "QP-4"
+      },
+      {
+        "operationId": "hybridSearchDocuments",
+        "method": "POST",
+        "path": "/api/v1/tenants/{tenantId}/search/hybrid",
+        "purpose": "Run lexical plus metadata-filtered retrieval over chunks to support hybrid structured and unstructured search.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "body": {
+            "query_text": "string, required",
+            "chunk_profile_id": "objectId, required",
+            "metadata_filters": "object, optional",
+            "document_scope": {
+              "document_ids": [
+                "objectId, optional"
+              ],
+              "source_systems": [
+                "string, optional"
+              ]
+            },
+            "top_k": "integer, required",
+            "query_id": "objectId, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "query_id": "objectId|null",
+            "retrieval_mode": "hybrid",
+            "results": [
+              {
+                "rank": "integer",
+                "chunk_id": "objectId",
+                "document_id": "objectId",
+                "score": "number",
+                "text_snippet": "string",
+                "source_title": "string|null",
+                "document_type": "string",
+                "structured_attributes": "object|null"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Missing required inputs or invalid ids/filter shape."
+          },
+          {
+            "status": 404,
+            "code": "CHUNK_PROFILE_NOT_FOUND",
+            "when": "chunk_profile_id is invalid for the tenant/global scope."
+          }
+        ],
+        "backing": "QP-5"
+      },
+      {
+        "operationId": "searchAgentMemory",
+        "method": "POST",
+        "path": "/api/v1/tenants/{tenantId}/agent-memory/search",
+        "purpose": "Retrieve relevant conversation-derived memory chunks for an agent while honoring document access tags.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "body": {
+            "query_text": "string, required for traceability even when query_embedding is supplied",
+            "query_embedding": [
+              "float, optional if embedding generated server-side"
+            ],
+            "chunk_profile_id": "objectId, required",
+            "memory_type": "string, optional",
+            "user_id": "objectId, required",
+            "group_ids": [
+              "objectId, optional"
+            ],
+            "top_k": "integer, required",
+            "num_candidates": "integer, required",
+            "query_id": "objectId, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "query_id": "objectId|null",
+            "retrieval_mode": "vector",
+            "results": [
+              {
+                "rank": "integer",
+                "chunk_id": "objectId",
+                "document_id": "objectId",
+                "score": "number",
+                "text_snippet": "string",
+                "source_title": "string|null",
+                "structured_attributes": "object|null",
+                "created_at": "datetime"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Missing required inputs or invalid ids."
+          },
+          {
+            "status": 404,
+            "code": "CHUNK_PROFILE_NOT_FOUND",
+            "when": "chunk_profile_id is invalid for the tenant/global scope."
+          },
+          {
+            "status": 422,
+            "code": "EMBEDDING_GENERATION_FAILED",
+            "when": "Server-side embedding generation fails."
+          }
+        ],
+        "backing": "QP-6"
+      },
+      {
+        "operationId": "createBenchmarkRun",
+        "method": "POST",
+        "path": "/api/v1/tenants/{tenantId}/benchmark-runs",
+        "purpose": "Create a benchmark run configuration for side-by-side POV evaluation.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "body": {
+            "name": "string, required",
+            "status": "draft|running|completed|failed, required",
+            "comparison_targets": [
+              {
+                "target_name": "string, required",
+                "target_type": "mongodb_voyage|elastic|opensearch|qdrant|rudimentary_baseline|other, required"
+              }
+            ],
+            "chunk_profile_ids": [
+              "objectId, optional"
+            ],
+            "top_k_values": [
+              "integer, required"
+            ],
+            "notes": "string, optional",
+            "started_at": "datetime, optional",
+            "completed_at": "datetime, optional"
+          }
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "benchmark_run": {
+              "_id": "objectId",
+              "tenant_id": "objectId",
+              "name": "string",
+              "status": "draft|running|completed|failed",
+              "comparison_targets": [
+                {
+                  "target_name": "string",
+                  "target_type": "string"
+                }
+              ],
+              "chunk_profile_ids": [
+                "objectId"
+              ],
+              "top_k_values": [
+                "integer"
+              ],
+              "notes": "string|null",
+              "started_at": "datetime|null",
+              "completed_at": "datetime|null",
+              "created_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Missing required fields or invalid enum values."
+          },
+          {
+            "status": 404,
+            "code": "TENANT_NOT_FOUND",
+            "when": "tenantId does not exist."
+          }
+        ],
+        "backing": "CRUD insertOne on benchmark_runs"
+      },
+      {
+        "operationId": "listBenchmarkRuns",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/benchmark-runs",
+        "purpose": "List benchmark runs for a tenant.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "query": {
+            "status": "draft|running|completed|failed, optional",
+            "limit": "integer, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "benchmark_runs": [
+              {
+                "_id": "objectId",
+                "name": "string",
+                "status": "draft|running|completed|failed",
+                "comparison_targets": [
+                  {
+                    "target_name": "string",
+                    "target_type": "string"
+                  }
+                ],
+                "chunk_profile_ids": [
+                  "objectId"
+                ],
+                "top_k_values": [
+                  "integer"
+                ],
+                "started_at": "datetime|null",
+                "completed_at": "datetime|null",
+                "created_at": "datetime"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Invalid tenant id or filter values."
+          }
+        ],
+        "backing": "QP-8"
+      },
+      {
+        "operationId": "getBenchmarkRunDetail",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/benchmark-runs/{benchmarkRunId}",
+        "purpose": "Retrieve benchmark configuration details including chunk profile definitions.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required",
+            "benchmarkRunId": "objectId, required"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "benchmark_run": {
+              "_id": "objectId",
+              "name": "string",
+              "status": "draft|running|completed|failed",
+              "comparison_targets": [
+                {
+                  "target_name": "string",
+                  "target_type": "string"
+                }
+              ],
+              "top_k_values": [
+                "integer"
+              ],
+              "notes": "string|null",
+              "started_at": "datetime|null",
+              "completed_at": "datetime|null",
+              "chunk_profiles": [
+                {
+                  "_id": "objectId",
+                  "name": "string",
+                  "strategy": "fixed_length|recursive|semantic|contextual",
+                  "parameters": "object|null"
+                }
+              ]
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "INVALID_ID",
+            "when": "tenantId or benchmarkRunId is invalid."
+          },
+          {
+            "status": 404,
+            "code": "BENCHMARK_RUN_NOT_FOUND",
+            "when": "Run does not exist for tenant."
+          }
+        ],
+        "backing": "QP-14"
+      },
+      {
+        "operationId": "updateBenchmarkRun",
+        "method": "PATCH",
+        "path": "/api/v1/tenants/{tenantId}/benchmark-runs/{benchmarkRunId}",
+        "purpose": "Update benchmark run status or configuration fields.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required",
+            "benchmarkRunId": "objectId, required"
+          },
+          "body": {
+            "name": "string, optional",
+            "status": "draft|running|completed|failed, optional",
+            "comparison_targets": [
+              {
+                "target_name": "string",
+                "target_type": "mongodb_voyage|elastic|opensearch|qdrant|rudimentary_baseline|other"
+              }
+            ],
+            "chunk_profile_ids": [
+              "objectId, optional"
+            ],
+            "top_k_values": [
+              "integer, optional"
+            ],
+            "notes": "string, optional",
+            "started_at": "datetime, optional",
+            "completed_at": "datetime, optional"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "benchmark_run": {
+              "_id": "objectId",
+              "tenant_id": "objectId",
+              "name": "string",
+              "status": "draft|running|completed|failed",
+              "comparison_targets": [
+                {
+                  "target_name": "string",
+                  "target_type": "string"
+                }
+              ],
+              "chunk_profile_ids": [
+                "objectId"
+              ],
+              "top_k_values": [
+                "integer"
+              ],
+              "notes": "string|null",
+              "started_at": "datetime|null",
+              "completed_at": "datetime|null",
+              "created_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Invalid fields or enum values."
+          },
+          {
+            "status": 404,
+            "code": "BENCHMARK_RUN_NOT_FOUND",
+            "when": "Run does not exist for tenant."
+          }
+        ],
+        "backing": "CRUD updateOne on benchmark_runs"
+      },
+      {
+        "operationId": "createQueryResult",
+        "method": "POST",
+        "path": "/api/v1/tenants/{tenantId}/query-results",
+        "purpose": "Persist retrieval outputs and evaluation metrics for one query execution under one approach.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required"
+          },
+          "body": {
+            "benchmark_run_id": "objectId, optional",
+            "query_id": "objectId, required",
+            "approach": "mongodb_voyage|elastic|opensearch|qdrant|rudimentary_baseline|other, required",
+            "chunk_profile_id": "objectId, optional",
+            "retrieval_mode": "vector|lexical|hybrid, required",
+            "latency_ms": "number, required",
+            "top_k_requested": "integer, required",
+            "results": [
+              {
+                "rank": "integer, required",
+                "chunk_id": "objectId, optional",
+                "document_id": "objectId, optional",
+                "score": "number, optional",
+                "rerank_score": "number, optional",
+                "text_snippet": "string, optional",
+                "source_title": "string, optional",
+                "is_ground_truth_match": "boolean, optional"
+              }
+            ],
+            "metrics": {
+              "precision_at_k": "object, optional",
+              "recall_at_k": "object, optional",
+              "mrr": "number, optional",
+              "ndcg": "number, optional"
+            }
+          }
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "query_result": {
+              "_id": "objectId",
+              "benchmark_run_id": "objectId|null",
+              "query_id": "objectId",
+              "tenant_id": "objectId",
+              "approach": "string",
+              "chunk_profile_id": "objectId|null",
+              "retrieval_mode": "vector|lexical|hybrid",
+              "latency_ms": "number",
+              "top_k_requested": "integer",
+              "results": "array",
+              "metrics": "object|null",
+              "created_at": "datetime"
+            }
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "VALIDATION_ERROR",
+            "when": "Missing required fields or invalid enum values."
+          },
+          {
+            "status": 404,
+            "code": "QUERY_NOT_FOUND",
+            "when": "query_id does not exist for the tenant."
+          },
+          {
+            "status": 404,
+            "code": "BENCHMARK_RUN_NOT_FOUND",
+            "when": "benchmark_run_id is provided but does not exist for the tenant."
+          }
+        ],
+        "backing": "CRUD insertOne on query_results"
+      },
+      {
+        "operationId": "getBenchmarkQueryComparison",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/benchmark-runs/{benchmarkRunId}/queries/{queryId}/comparisons",
+        "purpose": "Get side-by-side results for one benchmark query across approaches and chunk profiles.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required",
+            "benchmarkRunId": "objectId, required",
+            "queryId": "objectId, required"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "comparisons": [
+              {
+                "approach": "mongodb_voyage|elastic|opensearch|qdrant|rudimentary_baseline|other",
+                "retrieval_mode": "vector|lexical|hybrid",
+                "latency_ms": "number",
+                "top_k_requested": "integer",
+                "results": [
+                  {
+                    "rank": "integer",
+                    "chunk_id": "objectId|null",
+                    "document_id": "objectId|null",
+                    "score": "number|null",
+                    "rerank_score": "number|null",
+                    "text_snippet": "string|null",
+                    "source_title": "string|null",
+                    "is_ground_truth_match": "boolean|null"
+                  }
+                ],
+                "metrics": {
+                  "precision_at_k": "object|null",
+                  "recall_at_k": "object|null",
+                  "mrr": "number|null",
+                  "ndcg": "number|null"
+                },
+                "chunk_profile": {
+                  "name": "string|null",
+                  "strategy": "fixed_length|recursive|semantic|contextual|null"
+                }
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "INVALID_ID",
+            "when": "Any path id is invalid."
+          },
+          {
+            "status": 404,
+            "code": "QUERY_OR_RUN_NOT_FOUND",
+            "when": "No matching query/run exists for the tenant."
+          }
+        ],
+        "backing": "QP-10"
+      },
+      {
+        "operationId": "getBenchmarkSummary",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/benchmark-runs/{benchmarkRunId}/summary",
+        "purpose": "Get aggregate benchmark metrics by approach, retrieval mode, chunk profile, and top-k.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required",
+            "benchmarkRunId": "objectId, required"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "summary": [
+              {
+                "approach": "mongodb_voyage|elastic|opensearch|qdrant|rudimentary_baseline|other",
+                "retrieval_mode": "vector|lexical|hybrid",
+                "chunk_profile_id": "objectId|null",
+                "top_k_requested": "integer",
+                "avg_latency_ms": "number",
+                "query_count": "integer",
+                "avg_mrr": "number|null",
+                "avg_ndcg": "number|null",
+                "avg_precision_at_1": "number|null",
+                "avg_precision_at_5": "number|null",
+                "avg_precision_at_10": "number|null",
+                "avg_precision_at_20": "number|null",
+                "avg_recall_at_1": "number|null",
+                "avg_recall_at_5": "number|null",
+                "avg_recall_at_10": "number|null",
+                "avg_recall_at_20": "number|null"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "INVALID_ID",
+            "when": "tenantId or benchmarkRunId is invalid."
+          },
+          {
+            "status": 404,
+            "code": "BENCHMARK_RUN_NOT_FOUND",
+            "when": "Run does not exist for tenant."
+          }
+        ],
+        "backing": "QP-11"
+      },
+      {
+        "operationId": "getBenchmarkWins",
+        "method": "GET",
+        "path": "/api/v1/tenants/{tenantId}/benchmark-runs/{benchmarkRunId}/wins",
+        "purpose": "Identify benchmark queries where MongoDB/Voyage outperforms a baseline on relevance and/or latency.",
+        "request": {
+          "path": {
+            "tenantId": "objectId, required",
+            "benchmarkRunId": "objectId, required"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "wins": [
+              {
+                "query_id": "objectId",
+                "mongodb_voyage": {
+                  "approach": "mongodb_voyage",
+                  "latency_ms": "number|null",
+                  "mrr": "number|null",
+                  "ndcg": "number|null",
+                  "precision_at_5": "number|null",
+                  "recall_at_5": "number|null"
+                },
+                "baseline": {
+                  "approach": "elastic|opensearch|qdrant|rudimentary_baseline|other",
+                  "latency_ms": "number|null",
+                  "mrr": "number|null",
+                  "ndcg": "number|null",
+                  "precision_at_5": "number|null",
+                  "recall_at_5": "number|null"
+                },
+                "is_better_on_mrr": "boolean",
+                "is_better_on_ndcg": "boolean",
+                "is_better_on_precision_at_5": "boolean",
+                "is_better_on_recall_at_5": "boolean",
+                "is_lower_latency": "boolean"
+              }
+            ]
+          }
+        },
+        "errors": [
+          {
+            "status": 400,
+            "code": "INVALID_ID",
+            "when": "tenantId or benchmarkRunId is invalid."
+          },
+          {
+            "status": 404,
+            "code": "BENCHMARK_RUN_NOT_FOUND",
+            "when": "Run does not exist for tenant."
+          }
+        ],
+        "backing": "QP-12"
+      }
+    ],
+    "unsupported_or_out_of_scope": [
+      {
+        "capability": "Raw binary file upload/download",
+        "reason": "The authoritative data model explicitly keeps raw binaries out of MongoDB and stores only source_uri/extracted text; no query pattern supports blob retrieval."
+      },
+      {
+        "capability": "Automatic reranking execution endpoint",
+        "reason": "Rerank scores are represented in query_results results payloads, but no authoritative query pattern defines a standalone rerank operation. Reranking may occur inside retrieval services before persisting results, but not as a separate contract endpoint."
+      },
+      {
+        "capability": "Delete endpoints for documents, benchmark runs, queries, or results",
+        "reason": "Possible via CRUD in principle, but not required by the authoritative query patterns or POV scope; omitted to avoid inventing unneeded lifecycle APIs."
+      },
+      {
+        "capability": "Agent conversation/session database APIs",
+        "reason": "The authoritative model explicitly excludes a separate session/conversation collection."
+      }
+    ]
+  },
+  "query_patterns": {
+    "QP-1": {
+      "name": "List retrieval-ready documents for a tenant demo session",
+      "serves": [
+        "UC-1",
+        "UC-4",
+        "FR-1",
+        "FR-6"
+      ],
+      "collections": [
+        "documents"
+      ],
+      "query": {
+        "collection": "documents",
+        "operation": "find",
+        "filter": {
+          "tenant_id": "<tenantId>",
+          "ingest_status": "embedded",
+          "document_type": {
+            "$in": [
+              "pdf",
+              "csv",
+              "google_sheet",
+              "text",
+              "slack_thread",
+              "confluence_page",
+              "jira_ticket",
+              "agent_memory",
+              "other"
+            ]
+          },
+          "source_system": {
+            "$in": [
+              "upload",
+              "s3",
+              "slack",
+              "confluence",
+              "jira",
+              "google_sheets",
+              "csv",
+              "pdf",
+              "agent_conversation",
+              "other"
+            ]
+          },
+          "created_at": {
+            "$gte": "<optionalStartDate>"
+          }
+        },
+        "projection": {
+          "title": 1,
+          "file_name": 1,
+          "document_type": 1,
+          "source_system": 1,
+          "source_uri": 1,
+          "structured_attributes": 1,
+          "is_agent_memory": 1,
+          "created_at": 1
+        },
+        "sort": {
+          "created_at": -1
+        },
+        "limit": "<pageSize>"
+      },
+      "purpose": "Show uploaded or connected documents that are ready for retrieval within a tenant-scoped POV/demo session."
+    },
+    "QP-2": {
+      "name": "Inspect document ingest pipeline status and failures",
+      "serves": [
+        "UC-1",
+        "UC-4",
+        "FR-6",
+        "AI-3"
+      ],
+      "collections": [
+        "documents"
+      ],
+      "query": {
+        "collection": "documents",
+        "operation": "find",
+        "filter": {
+          "tenant_id": "<tenantId>",
+          "ingest_status": {
+            "$in": [
+              "uploaded",
+              "text_extracted",
+              "chunked",
+              "embedded",
+              "failed"
+            ]
+          },
+          "created_at": {
+            "$gte": "<optionalStartDate>"
+          }
+        },
+        "projection": {
+          "title": 1,
+          "file_name": 1,
+          "document_type": 1,
+          "source_system": 1,
+          "ingest_status": 1,
+          "ingest_errors": 1,
+          "updated_at": 1
+        },
+        "sort": {
+          "updated_at": -1
+        },
+        "limit": "<pageSize>"
+      },
+      "purpose": "Monitor whether on-the-fly uploaded documents have been extracted, chunked, embedded, or failed during the demo workflow."
+    },
+    "QP-3": {
+      "name": "Retrieve chunk profiles available for comparison",
+      "serves": [
+        "UC-1",
+        "UC-4",
+        "FR-7"
+      ],
+      "collections": [
+        "chunk_profiles"
+      ],
+      "query": {
+        "collection": "chunk_profiles",
+        "operation": "find",
+        "filter": {
+          "is_active": true,
+          "$or": [
+            {
+              "tenant_id": "<tenantId>"
+            },
+            {
+              "tenant_id": null
+            }
+          ],
+          "strategy": {
+            "$in": [
+              "fixed_length",
+              "recursive",
+              "semantic",
+              "contextual"
+            ]
+          }
+        },
+        "projection": {
+          "name": 1,
+          "strategy": 1,
+          "parameters": 1,
+          "tenant_id": 1
+        },
+        "sort": {
+          "strategy": 1,
+          "name": 1
+        }
+      },
+      "purpose": "List the chunking strategies configured for the POV so users can compare fixed, recursive, semantic, and contextual chunking."
+    },
+    "QP-4": {
+      "name": "Vector retrieve chunks for document search",
+      "serves": [
+        "UC-1",
+        "FR-1",
+        "FR-4",
+        "FR-5",
+        "AI-1",
+        "AI-2"
+      ],
+      "collections": [
+        "chunks",
+        "documents"
+      ],
+      "query": {
+        "collection": "chunks",
+        "operation": "aggregate",
+        "pipeline": [
+          {
+            "$vectorSearch": {
+              "index": "vector_chunks_embedding",
+              "path": "embedding",
+              "queryVector": "<queryEmbedding>",
+              "numCandidates": "<numCandidates>",
+              "limit": "<topK>",
+              "filter": {
+                "tenant_id": "<tenantId>",
+                "chunk_profile_id": "<chunkProfileId>",
+                "document_id": {
+                  "$in": "<optionalDocumentIds>"
+                }
+              }
+            }
+          },
+          {
+            "$project": {
+              "document_id": 1,
+              "chunk_profile_id": 1,
+              "text": 1,
+              "structured_attributes": 1,
+              "score": {
+                "$meta": "vectorSearchScore"
+              }
+            }
+          },
+          {
+            "$lookup": {
+              "from": "documents",
+              "localField": "document_id",
+              "foreignField": "_id",
+              "as": "document"
+            }
+          },
+          {
+            "$unwind": "$document"
+          },
+          {
+            "$match": {
+              "$and": [
+                {
+                  "document.tenant_id": "<tenantId>"
+                },
+                {
+                  "document.ingest_status": "embedded"
+                },
+                {
+                  "$or": [
+                    {
+                      "document.access.user_ids": "<optionalUserId>"
+                    },
+                    {
+                      "document.access.group_ids": {
+                        "$in": "<optionalGroupIds>"
+                      }
+                    },
+                    {
+                      "document.access": {
+                        "$exists": false
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "$project": {
+              "chunk_id": "$_id",
+              "document_id": 1,
+              "score": 1,
+              "text_snippet": {
+                "$substrCP": [
+                  "$text",
+                  0,
+                  500
+                ]
+              },
+              "source_title": "$document.title",
+              "document_type": "$document.document_type",
+              "source_system": "$document.source_system",
+              "structured_attributes": 1
+            }
+          },
+          {
+            "$sort": {
+              "score": -1
+            }
+          },
+          {
+            "$limit": "<topK>"
+          }
+        ]
+      },
+      "purpose": "Run semantic vector search over chunk embeddings and return the most relevant tenant-scoped chunks for an uploaded document question."
+    },
+    "QP-5": {
+      "name": "Hybrid lexical plus metadata retrieval over chunks",
+      "serves": [
+        "UC-1",
+        "UC-3",
+        "FR-2",
+        "FR-4",
+        "AI-1"
+      ],
+      "collections": [
+        "chunks",
+        "documents"
+      ],
+      "query": {
+        "collection": "chunks",
+        "operation": "aggregate",
+        "pipeline": [
+          {
+            "$search": {
+              "index": "search_chunks_text",
+              "compound": {
+                "must": [
+                  {
+                    "text": {
+                      "query": "<queryText>",
+                      "path": "text"
+                    }
+                  }
+                ],
+                "filter": [
+                  {
+                    "equals": {
+                      "path": "tenant_id",
+                      "value": "<tenantId>"
+                    }
+                  },
+                  {
+                    "equals": {
+                      "path": "chunk_profile_id",
+                      "value": "<chunkProfileId>"
+                    }
+                  },
+                  "<optionalMetadataFilters>",
+                  "<optionalDocumentScopeFilters>"
+                ]
+              }
+            }
+          },
+          {
+            "$project": {
+              "document_id": 1,
+              "text": 1,
+              "structured_attributes": 1,
+              "score": {
+                "$meta": "searchScore"
+              }
+            }
+          },
+          {
+            "$lookup": {
+              "from": "documents",
+              "localField": "document_id",
+              "foreignField": "_id",
+              "as": "document"
+            }
+          },
+          {
+            "$unwind": "$document"
+          },
+          {
+            "$match": {
+              "document.ingest_status": "embedded"
+            }
+          },
+          {
+            "$project": {
+              "chunk_id": "$_id",
+              "document_id": 1,
+              "score": 1,
+              "text_snippet": {
+                "$substrCP": [
+                  "$text",
+                  0,
+                  500
+                ]
+              },
+              "source_title": "$document.title",
+              "document_type": "$document.document_type",
+              "structured_attributes": 1
+            }
+          },
+          {
+            "$sort": {
+              "score": -1
+            }
+          },
+          {
+            "$limit": "<topK>"
+          }
+        ]
+      },
+      "purpose": "Retrieve chunks using text search combined with structured metadata filters to support hybrid structured and unstructured retrieval."
+    },
+    "QP-6": {
+      "name": "Agent memory retrieval for a tenant",
+      "serves": [
+        "UC-2",
+        "FR-3",
+        "FR-4",
+        "FR-9"
+      ],
+      "collections": [
+        "chunks",
+        "documents"
+      ],
+      "query": {
+        "collection": "chunks",
+        "operation": "aggregate",
+        "pipeline": [
+          {
+            "$vectorSearch": {
+              "index": "vector_chunks_embedding",
+              "path": "embedding",
+              "queryVector": "<queryEmbedding>",
+              "numCandidates": "<numCandidates>",
+              "limit": "<topK>",
+              "filter": {
+                "tenant_id": "<tenantId>",
+                "chunk_profile_id": "<chunkProfileId>",
+                "structured_attributes.memory_type": "<optionalMemoryType>"
+              }
+            }
+          },
+          {
+            "$lookup": {
+              "from": "documents",
+              "localField": "document_id",
+              "foreignField": "_id",
+              "as": "document"
+            }
+          },
+          {
+            "$unwind": "$document"
+          },
+          {
+            "$match": {
+              "document.is_agent_memory": true,
+              "document.tenant_id": "<tenantId>",
+              "$or": [
+                {
+                  "document.access.user_ids": "<userId>"
+                },
+                {
+                  "document.access.group_ids": {
+                    "$in": "<groupIds>"
+                  }
+                },
+                {
+                  "document.access": {
+                    "$exists": false
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "$project": {
+              "chunk_id": "$_id",
+              "document_id": "$document._id",
+              "score": {
+                "$meta": "vectorSearchScore"
+              },
+              "text_snippet": {
+                "$substrCP": [
+                  "$text",
+                  0,
+                  500
+                ]
+              },
+              "source_title": "$document.title",
+              "structured_attributes": 1,
+              "created_at": "$document.created_at"
+            }
+          },
+          {
+            "$sort": {
+              "score": -1
+            }
+          },
+          {
+            "$limit": "<topK>"
+          }
+        ]
+      },
+      "purpose": "Fetch relevant conversation-derived memory chunks for an agent while honoring tenant and optional document-level access tags."
+    },
+    "QP-7": {
+      "name": "Get ordered chunks for a document under a specific chunking strategy",
+      "serves": [
+        "UC-1",
+        "UC-4",
+        "FR-7"
+      ],
+      "collections": [
+        "chunks",
+        "chunk_profiles",
+        "documents"
+      ],
+      "query": {
+        "collection": "chunks",
+        "operation": "aggregate",
+        "pipeline": [
+          {
+            "$match": {
+              "document_id": "<documentId>",
+              "chunk_profile_id": "<chunkProfileId>"
+            }
+          },
+          {
+            "$sort": {
+              "chunk_index": 1
+            }
+          },
+          {
+            "$lookup": {
+              "from": "chunk_profiles",
+              "localField": "chunk_profile_id",
+              "foreignField": "_id",
+              "as": "chunk_profile"
+            }
+          },
+          {
+            "$unwind": "$chunk_profile"
+          },
+          {
+            "$project": {
+              "document_id": 1,
+              "chunk_index": 1,
+              "text": 1,
+              "token_count": 1,
+              "char_count": 1,
+              "chunk_profile.name": 1,
+              "chunk_profile.strategy": 1,
+              "chunk_profile.parameters": 1
+            }
+          }
+        ]
+      },
+      "purpose": "Inspect how a document was split into chunks for a given strategy, useful for explaining retrieval behavior during the benchmark/demo."
+    },
+    "QP-8": {
+      "name": "List benchmark runs for a tenant",
+      "serves": [
+        "UC-4",
+        "BO-5"
+      ],
+      "collections": [
+        "benchmark_runs"
+      ],
+      "query": {
+        "collection": "benchmark_runs",
+        "operation": "find",
+        "filter": {
+          "tenant_id": "<tenantId>",
+          "status": {
+            "$in": [
+              "draft",
+              "running",
+              "completed",
+              "failed"
+            ]
+          }
+        },
+        "projection": {
+          "name": 1,
+          "status": 1,
+          "comparison_targets": 1,
+          "chunk_profile_ids": 1,
+          "top_k_values": 1,
+          "started_at": 1,
+          "completed_at": 1,
+          "created_at": 1
+        },
+        "sort": {
+          "created_at": -1
+        },
+        "limit": "<pageSize>"
+      },
+      "purpose": "Show available POV benchmark sessions and their status for a tenant/customer."
+    },
+    "QP-9": {
+      "name": "List queries for a benchmark run",
+      "serves": [
+        "UC-4",
+        "AI-4"
+      ],
+      "collections": [
+        "queries"
+      ],
+      "query": {
+        "collection": "queries",
+        "operation": "find",
+        "filter": {
+          "tenant_id": "<tenantId>",
+          "benchmark_run_id": "<benchmarkRunId>",
+          "query_type": "benchmark"
+        },
+        "projection": {
+          "query_text": 1,
+          "expected_answer_text": 1,
+          "ground_truth_chunk_ids": 1,
+          "ground_truth_document_ids": 1,
+          "document_scope": 1,
+          "created_at": 1
+        },
+        "sort": {
+          "created_at": 1
+        }
+      },
+      "purpose": "Retrieve the benchmark question set and associated ground truth references for a specific POV run."
+    },
+    "QP-10": {
+      "name": "Side-by-side results for one query across approaches and chunk profiles",
+      "serves": [
+        "UC-4",
+        "SC-3",
+        "SC-4",
+        "SC-7"
+      ],
+      "collections": [
+        "query_results",
+        "chunk_profiles"
+      ],
+      "query": {
+        "collection": "query_results",
+        "operation": "aggregate",
+        "pipeline": [
+          {
+            "$match": {
+              "tenant_id": "<tenantId>",
+              "benchmark_run_id": "<benchmarkRunId>",
+              "query_id": "<queryId>",
+              "approach": {
+                "$in": [
+                  "mongodb_voyage",
+                  "elastic",
+                  "opensearch",
+                  "qdrant",
+                  "rudimentary_baseline",
+                  "other"
+                ]
+              }
+            }
+          },
+          {
+            "$lookup": {
+              "from": "chunk_profiles",
+              "localField": "chunk_profile_id",
+              "foreignField": "_id",
+              "as": "chunk_profile"
+            }
+          },
+          {
+            "$unwind": {
+              "path": "$chunk_profile",
+              "preserveNullAndEmptyArrays": true
+            }
+          },
+          {
+            "$project": {
+              "approach": 1,
+              "retrieval_mode": 1,
+              "latency_ms": 1,
+              "top_k_requested": 1,
+              "results": 1,
+              "metrics": 1,
+              "chunk_profile": {
+                "name": "$chunk_profile.name",
+                "strategy": "$chunk_profile.strategy"
+              }
+            }
+          },
+          {
+            "$sort": {
+              "approach": 1,
+              "chunk_profile.strategy": 1
+            }
+          }
+        ]
+      },
+      "purpose": "Compare the returned top-k results, latency, and metrics for one benchmark query across MongoDB/Voyage and baseline systems."
+    },
+    "QP-11": {
+      "name": "Benchmark summary by approach for a run",
+      "serves": [
+        "UC-4",
+        "AI-5",
+        "AI-6",
+        "SC-4",
+        "SC-5",
+        "SC-6"
+      ],
+      "collections": [
+        "query_results"
+      ],
+      "query": {
+        "collection": "query_results",
+        "operation": "aggregate",
+        "pipeline": [
+          {
+            "$match": {
+              "tenant_id": "<tenantId>",
+              "benchmark_run_id": "<benchmarkRunId>"
+            }
+          },
+          {
+            "$group": {
+              "_id": {
+                "approach": "$approach",
+                "retrieval_mode": "$retrieval_mode",
+                "chunk_profile_id": "$chunk_profile_id",
+                "top_k_requested": "$top_k_requested"
+              },
+              "avg_latency_ms": {
+                "$avg": "$latency_ms"
+              },
+              "query_count": {
+                "$sum": 1
+              },
+              "avg_mrr": {
+                "$avg": "$metrics.mrr"
+              },
+              "avg_ndcg": {
+                "$avg": "$metrics.ndcg"
+              },
+              "avg_precision_at_1": {
+                "$avg": "$metrics.precision_at_k.1"
+              },
+              "avg_precision_at_5": {
+                "$avg": "$metrics.precision_at_k.5"
+              },
+              "avg_precision_at_10": {
+                "$avg": "$metrics.precision_at_k.10"
+              },
+              "avg_precision_at_20": {
+                "$avg": "$metrics.precision_at_k.20"
+              },
+              "avg_recall_at_1": {
+                "$avg": "$metrics.recall_at_k.1"
+              },
+              "avg_recall_at_5": {
+                "$avg": "$metrics.recall_at_k.5"
+              },
+              "avg_recall_at_10": {
+                "$avg": "$metrics.recall_at_k.10"
+              },
+              "avg_recall_at_20": {
+                "$avg": "$metrics.recall_at_k.20"
+              }
+            }
+          },
+          {
+            "$sort": {
+              "_id.approach": 1,
+              "_id.top_k_requested": 1
+            }
+          }
+        ]
+      },
+      "purpose": "Produce aggregate benchmark metrics per approach and top-k level, including precision, recall, ranking quality, and average latency."
+    },
+    "QP-12": {
+      "name": "Detect queries where MongoDB/Voyage outperforms baseline",
+      "serves": [
+        "UC-4",
+        "SC-7",
+        "BO-5"
+      ],
+      "collections": [
+        "query_results"
+      ],
+      "query": {
+        "collection": "query_results",
+        "operation": "aggregate",
+        "pipeline": [
+          {
+            "$match": {
+              "tenant_id": "<tenantId>",
+              "benchmark_run_id": "<benchmarkRunId>",
+              "approach": {
+                "$in": [
+                  "mongodb_voyage",
+                  "elastic",
+                  "opensearch",
+                  "qdrant",
+                  "rudimentary_baseline",
+                  "other"
+                ]
+              }
+            }
+          },
+          {
+            "$project": {
+              "query_id": 1,
+              "approach": 1,
+              "latency_ms": 1,
+              "mrr": "$metrics.mrr",
+              "ndcg": "$metrics.ndcg",
+              "precision_at_5": "$metrics.precision_at_k.5",
+              "recall_at_5": "$metrics.recall_at_k.5"
+            }
+          },
+          {
+            "$group": {
+              "_id": "$query_id",
+              "by_approach": {
+                "$push": {
+                  "approach": "$approach",
+                  "latency_ms": "$latency_ms",
+                  "mrr": "$mrr",
+                  "ndcg": "$ndcg",
+                  "precision_at_5": "$precision_at_5",
+                  "recall_at_5": "$recall_at_5"
+                }
+              }
+            }
+          },
+          {
+            "$project": {
+              "by_approach": 1,
+              "mongodb_voyage": {
+                "$first": {
+                  "$filter": {
+                    "input": "$by_approach",
+                    "as": "r",
+                    "cond": {
+                      "$eq": [
+                        "$$r.approach",
+                        "mongodb_voyage"
+                      ]
+                    }
+                  }
+                }
+              },
+              "baseline": {
+                "$first": {
+                  "$filter": {
+                    "input": "$by_approach",
+                    "as": "r",
+                    "cond": {
+                      "$in": [
+                        "$$r.approach",
+                        [
+                          "elastic",
+                          "opensearch",
+                          "qdrant",
+                          "rudimentary_baseline",
+                          "other"
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "$project": {
+              "mongodb_voyage": 1,
+              "baseline": 1,
+              "is_better_on_mrr": {
+                "$gt": [
+                  "$mongodb_voyage.mrr",
+                  "$baseline.mrr"
+                ]
+              },
+              "is_better_on_ndcg": {
+                "$gt": [
+                  "$mongodb_voyage.ndcg",
+                  "$baseline.ndcg"
+                ]
+              },
+              "is_better_on_precision_at_5": {
+                "$gt": [
+                  "$mongodb_voyage.precision_at_5",
+                  "$baseline.precision_at_5"
+                ]
+              },
+              "is_better_on_recall_at_5": {
+                "$gt": [
+                  "$mongodb_voyage.recall_at_5",
+                  "$baseline.recall_at_5"
+                ]
+              },
+              "is_lower_latency": {
+                "$lt": [
+                  "$mongodb_voyage.latency_ms",
+                  "$baseline.latency_ms"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "purpose": "Identify benchmark questions where MongoDB/Voyage beats a comparison target on relevance and/or latency."
+    },
+    "QP-13": {
+      "name": "Recent ad hoc query history for a tenant",
+      "serves": [
+        "UC-1",
+        "UC-2",
+        "FR-6"
+      ],
+      "collections": [
+        "queries"
+      ],
+      "query": {
+        "collection": "queries",
+        "operation": "find",
+        "filter": {
+          "tenant_id": "<tenantId>",
+          "query_type": "ad_hoc",
+          "created_at": {
+            "$gte": "<optionalStartDate>"
+          }
+        },
+        "projection": {
+          "query_text": 1,
+          "document_scope": 1,
+          "created_by": 1,
+          "created_at": 1
+        },
+        "sort": {
+          "created_at": -1
+        },
+        "limit": "<pageSize>"
+      },
+      "purpose": "Show recent interactive questions asked during a demo session for document search or agent memory exploration."
+    },
+    "QP-14": {
+      "name": "Benchmark run detail with chunk profile definitions",
+      "serves": [
+        "UC-4",
+        "FR-7",
+        "BO-5"
+      ],
+      "collections": [
+        "benchmark_runs",
+        "chunk_profiles"
+      ],
+      "query": {
+        "collection": "benchmark_runs",
+        "operation": "aggregate",
+        "pipeline": [
+          {
+            "$match": {
+              "_id": "<benchmarkRunId>",
+              "tenant_id": "<tenantId>"
+            }
+          },
+          {
+            "$lookup": {
+              "from": "chunk_profiles",
+              "localField": "chunk_profile_ids",
+              "foreignField": "_id",
+              "as": "chunk_profiles"
+            }
+          },
+          {
+            "$project": {
+              "name": 1,
+              "status": 1,
+              "comparison_targets": 1,
+              "top_k_values": 1,
+              "notes": 1,
+              "started_at": 1,
+              "completed_at": 1,
+              "chunk_profiles": {
+                "_id": 1,
+                "name": 1,
+                "strategy": 1,
+                "parameters": 1
+              }
+            }
+          }
+        ]
+      },
+      "purpose": "Retrieve the benchmark configuration, including which systems and chunking strategies are being compared in the POV."
+    }
+  },
+  "data_model": {
+    "collections": [
+      {
+        "name": "tenants",
+        "description": "Tenant/customer isolation boundary for uploaded documents, agent memory, benchmark runs, and queries. Included because Tenant is an explicit business entity and retrieval/evaluation flows are tenant-scoped.",
+        "traceability": [
+          "business_entities:Tenant",
+          "UC-1",
+          "UC-2",
+          "UC-3",
+          "UC-4",
+          "FR-6"
+        ],
+        "fields": [
+          {
+            "name": "_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "tenant_key",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "deployment_model",
+            "type": "string",
+            "required": false,
+            "enum": [
+              "shared",
+              "isolated"
+            ]
+          },
+          {
+            "name": "cloud",
+            "type": "string",
+            "required": false,
+            "enum": [
+              "aws",
+              "gcp",
+              "azure",
+              "other"
+            ]
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "active",
+              "inactive"
+            ]
+          },
+          {
+            "name": "created_at",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "updated_at",
+            "type": "date",
+            "required": true
+          }
+        ],
+        "embedded_documents": [],
+        "references": [],
+        "relationships": [
+          {
+            "type": "one-to-many",
+            "to": "documents",
+            "via": "documents.tenant_id"
+          },
+          {
+            "type": "one-to-many",
+            "to": "queries",
+            "via": "queries.tenant_id"
+          },
+          {
+            "type": "one-to-many",
+            "to": "benchmark_runs",
+            "via": "benchmark_runs.tenant_id"
+          }
+        ],
+        "indexing": [
+          {
+            "name": "uk_tenant_key",
+            "kind": "regular",
+            "fields": [
+              "tenant_key"
+            ],
+            "unique": true,
+            "reason": "Lookup tenant by external/customer key during ingest and benchmark/demo sessions."
+          }
+        ]
+      },
+      {
+        "name": "documents",
+        "description": "Top-level customer-provided content and conversation-derived memory documents used for retrieval. Stores source metadata and extracted text, while raw binary may remain external (e.g. S3) per current-state integration context.",
+        "traceability": [
+          "business_entities:Document",
+          "business_entities:Agent Memory",
+          "UC-1",
+          "UC-2",
+          "UC-3",
+          "UC-4",
+          "FR-1",
+          "FR-3",
+          "FR-6",
+          "AI-3",
+          "INT-3",
+          "INT-7"
+        ],
+        "fields": [
+          {
+            "name": "_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "tenant_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "document_type",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "pdf",
+              "csv",
+              "google_sheet",
+              "text",
+              "slack_thread",
+              "confluence_page",
+              "jira_ticket",
+              "agent_memory",
+              "other"
+            ]
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "source_system",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "upload",
+              "s3",
+              "slack",
+              "confluence",
+              "jira",
+              "google_sheets",
+              "csv",
+              "pdf",
+              "agent_conversation",
+              "other"
+            ]
+          },
+          {
+            "name": "source_uri",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "mime_type",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "file_name",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "raw_text",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "structured_attributes",
+            "type": "object",
+            "required": false,
+            "description": "Flexible structured metadata used for hybrid retrieval filters, e.g. product area, connector source, labels, timestamps."
+          },
+          {
+            "name": "access",
+            "type": "object",
+            "required": false,
+            "fields": [
+              {
+                "name": "user_ids",
+                "type": "array<objectId>",
+                "required": false
+              },
+              {
+                "name": "group_ids",
+                "type": "array<objectId>",
+                "required": false
+              }
+            ],
+            "description": "Optional access association carried at document level; included as current-state-aligned metadata, not as a separate entitlement system."
+          },
+          {
+            "name": "ingest_status",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "uploaded",
+              "text_extracted",
+              "chunked",
+              "embedded",
+              "failed"
+            ]
+          },
+          {
+            "name": "ingest_errors",
+            "type": "array<object>",
+            "required": false
+          },
+          {
+            "name": "is_agent_memory",
+            "type": "bool",
+            "required": true
+          },
+          {
+            "name": "created_at",
+            "type": "date",
+            "required": true
+          },
+          {
+            "name": "updated_at",
+            "type": "date",
+            "required": true
+          }
+        ],
+        "embedded_documents": [],
+        "references": [
+          {
+            "field": "tenant_id",
+            "collection": "tenants",
+            "why": "Documents belong to a tenant and are queried within tenant scope."
+          }
+        ],
+        "relationships": [
+          {
+            "type": "many-to-one",
+            "to": "tenants",
+            "via": "tenant_id"
+          },
+          {
+            "type": "one-to-many",
+            "to": "chunks",
+            "via": "chunks.document_id"
+          },
+          {
+            "type": "one-to-many",
+            "to": "queries",
+            "via": "queries.document_scope.document_ids (optional scoping)"
+          }
+        ],
+        "indexing": [
+          {
+            "name": "idx_documents_tenant_status_type",
+            "kind": "regular",
+            "fields": [
+              "tenant_id",
+              "ingest_status",
+              "document_type"
+            ],
+            "reason": "Supports listing/filtering uploaded content in a demo session and selecting retrieval-ready documents by tenant/type."
+          },
+          {
+            "name": "idx_documents_tenant_source",
+            "kind": "regular",
+            "fields": [
+              "tenant_id",
+              "source_system",
+              "created_at"
+            ],
+            "reason": "Supports filtering by connector/source and recent uploads during POV demos."
+          },
+          {
+            "name": "idx_documents_structured_attrs",
+            "kind": "regular",
+            "fields": [
+              "tenant_id",
+              "structured_attributes"
+            ],
+            "reason": "Supports hybrid structured/unstructured retrieval filters within a tenant using metadata predicates."
+          }
+        ]
+      },
+      {
+        "name": "chunk_profiles",
+        "description": "Definition of chunking strategies used in the POV/demo and benchmarking harness. Separated so the same document can be chunked multiple ways without duplicating strategy metadata on every chunk.",
+        "traceability": [
+          "business_entities:Chunk",
+          "UC-1",
+          "UC-4",
+          "FR-6",
+          "FR-7"
+        ],
+        "fields": [
+          {
+            "name": "_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "tenant_id",
+            "type": "objectId",
+            "required": false
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "strategy",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "fixed_length",
+              "recursive",
+              "semantic",
+              "contextual"
+            ]
+          },
+          {
+            "name": "parameters",
+            "type": "object",
+            "required": false,
+            "description": "Strategy-specific settings such as chunk_size, overlap, separators, semantic thresholds."
+          },
+          {
+            "name": "is_active",
+            "type": "bool",
+            "required": true
+          },
+          {
+            "name": "created_at",
+            "type": "date",
+            "required": true
+          }
+        ],
+        "embedded_documents": [],
+        "references": [
+          {
+            "field": "tenant_id",
+            "collection": "tenants",
+            "why": "Allows tenant-specific or global benchmark/demo configurations."
+          }
+        ],
+        "relationships": [
+          {
+            "type": "one-to-many",
+            "to": "chunks",
+            "via": "chunks.chunk_profile_id"
+          }
+        ],
+        "indexing": [
+          {
+            "name": "idx_chunk_profiles_strategy",
+            "kind": "regular",
+            "fields": [
+              "strategy",
+              "is_active"
+            ],
+            "reason": "Supports selecting one or more configured chunking strategies for a demo or benchmark run."
+          }
+        ]
+      },
+      {
+        "name": "chunks",
+        "description": "Retrieval unit derived from documents. Stores chunk text, chunking strategy used, embedding vector, and ranking metadata needed for semantic retrieval and reranking experiments.",
+        "traceability": [
+          "business_entities:Chunk",
+          "business_entities:Embedding",
+          "UC-1",
+          "UC-2",
+          "UC-3",
+          "UC-4",
+          "FR-1",
+          "FR-3",
+          "FR-4",
+          "FR-5",
+          "FR-6",
+          "AI-1",
+          "AI-2"
+        ],
+        "fields": [
+          {
+            "name": "_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "tenant_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "document_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "chunk_profile_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "chunk_index",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "token_count",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "char_count",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "embedding",
+            "type": "array<float>",
+            "required": false
+          },
+          {
+            "name": "embedding_model",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "embedding_dimensions",
+            "type": "int",
+            "required": false
+          },
+          {
+            "name": "structured_attributes",
+            "type": "object",
+            "required": false,
+            "description": "Metadata copied/derived from document for hybrid filtering at chunk retrieval time."
+          },
+          {
+            "name": "rerank_text",
+            "type": "string",
+            "required": false,
+            "description": "Optional text optimized for reranker input, if different from chunk text."
+          },
+          {
+            "name": "created_at",
+            "type": "date",
+            "required": true
+          }
+        ],
+        "embedded_documents": [],
+        "references": [
+          {
+            "field": "tenant_id",
+            "collection": "tenants",
+            "why": "All retrieval is tenant scoped."
+          },
+          {
+            "field": "document_id",
+            "collection": "documents",
+            "why": "Chunks belong to a source document."
+          },
+          {
+            "field": "chunk_profile_id",
+            "collection": "chunk_profiles",
+            "why": "A document may be chunked multiple ways for side-by-side evaluation."
+          }
+        ],
+        "relationships": [
+          {
+            "type": "many-to-one",
+            "to": "documents",
+            "via": "document_id"
+          },
+          {
+            "type": "many-to-one",
+            "to": "tenants",
+            "via": "tenant_id"
+          },
+          {
+            "type": "many-to-one",
+            "to": "chunk_profiles",
+            "via": "chunk_profile_id"
+          },
+          {
+            "type": "many-to-many",
+            "to": "queries",
+            "via": "query_results.chunk_ids"
+          }
+        ],
+        "indexing": [
+          {
+            "name": "idx_chunks_document_profile_order",
+            "kind": "regular",
+            "fields": [
+              "document_id",
+              "chunk_profile_id",
+              "chunk_index"
+            ],
+            "reason": "Supports reassembling or inspecting chunks for a given document and chunking strategy in order."
+          },
+          {
+            "name": "idx_chunks_tenant_profile",
+            "kind": "regular",
+            "fields": [
+              "tenant_id",
+              "chunk_profile_id"
+            ],
+            "reason": "Supports retrieval limited to a tenant and a selected chunking strategy during benchmark comparisons."
+          },
+          {
+            "name": "search_chunks_text",
+            "kind": "search",
+            "fields": [
+              "text",
+              "structured_attributes"
+            ],
+            "reason": "Supports lexical and hybrid retrieval over chunk text plus metadata filters for document search and hybrid structured/unstructured use cases."
+          },
+          {
+            "name": "vector_chunks_embedding",
+            "kind": "vector",
+            "fields": [
+              "embedding"
+            ],
+            "reason": "Supports semantic vector retrieval over chunk embeddings for unstructured document search and agent memory retrieval at scale."
+          }
+        ]
+      },
+      {
+        "name": "queries",
+        "description": "User questions and benchmark prompts submitted against a tenant corpus. Captures both ad hoc demo questions and benchmark questions with optional ground truth linkage.",
+        "traceability": [
+          "business_entities:Query",
+          "business_entities:Ground Truth",
+          "UC-1",
+          "UC-2",
+          "UC-3",
+          "UC-4",
+          "FR-6",
+          "AI-4",
+          "AI-5",
+          "AI-6"
+        ],
+        "fields": [
+          {
+            "name": "_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "tenant_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "benchmark_run_id",
+            "type": "objectId",
+            "required": false
+          },
+          {
+            "name": "query_text",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "query_type",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "ad_hoc",
+              "benchmark"
+            ]
+          },
+          {
+            "name": "expected_answer_text",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "ground_truth_chunk_ids",
+            "type": "array<objectId>",
+            "required": false
+          },
+          {
+            "name": "ground_truth_document_ids",
+            "type": "array<objectId>",
+            "required": false
+          },
+          {
+            "name": "document_scope",
+            "type": "object",
+            "required": false,
+            "fields": [
+              {
+                "name": "document_ids",
+                "type": "array<objectId>",
+                "required": false
+              },
+              {
+                "name": "source_systems",
+                "type": "array<string>",
+                "required": false
+              },
+              {
+                "name": "metadata_filters",
+                "type": "object",
+                "required": false
+              }
+            ],
+            "description": "Optional constraints for on-the-fly demo queries or benchmark subsets."
+          },
+          {
+            "name": "created_by",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "created_at",
+            "type": "date",
+            "required": true
+          }
+        ],
+        "embedded_documents": [],
+        "references": [
+          {
+            "field": "tenant_id",
+            "collection": "tenants",
+            "why": "Queries are evaluated in tenant context."
+          },
+          {
+            "field": "benchmark_run_id",
+            "collection": "benchmark_runs",
+            "why": "Benchmark queries belong to a benchmark run when part of a formal evaluation."
+          }
+        ],
+        "relationships": [
+          {
+            "type": "many-to-one",
+            "to": "tenants",
+            "via": "tenant_id"
+          },
+          {
+            "type": "many-to-one",
+            "to": "benchmark_runs",
+            "via": "benchmark_run_id"
+          },
+          {
+            "type": "one-to-many",
+            "to": "query_results",
+            "via": "query_results.query_id"
+          }
+        ],
+        "indexing": [
+          {
+            "name": "idx_queries_run_type",
+            "kind": "regular",
+            "fields": [
+              "benchmark_run_id",
+              "query_type",
+              "created_at"
+            ],
+            "reason": "Supports listing benchmark prompts for a run and separating benchmark from ad hoc demo questions."
+          },
+          {
+            "name": "idx_queries_tenant_created",
+            "kind": "regular",
+            "fields": [
+              "tenant_id",
+              "created_at"
+            ],
+            "reason": "Supports recent-query history in a tenant-scoped demo session."
+          }
+        ]
+      },
+      {
+        "name": "benchmark_runs",
+        "description": "A side-by-side POV evaluation execution context for a corpus, retrieval configuration, and comparison target(s). Captures the benchmark session the customer requested, including top-k metrics and latency measurements across approaches.",
+        "traceability": [
+          "UC-4",
+          "BO-5",
+          "AI-4",
+          "AI-5",
+          "AI-6",
+          "SC-3",
+          "SC-4",
+          "SC-5",
+          "SC-6",
+          "SC-7"
+        ],
+        "fields": [
+          {
+            "name": "_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "tenant_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "draft",
+              "running",
+              "completed",
+              "failed"
+            ]
+          },
+          {
+            "name": "comparison_targets",
+            "type": "array<object>",
+            "required": true,
+            "fields": [
+              {
+                "name": "target_name",
+                "type": "string",
+                "required": true
+              },
+              {
+                "name": "target_type",
+                "type": "string",
+                "required": true,
+                "enum": [
+                  "mongodb_voyage",
+                  "elastic",
+                  "opensearch",
+                  "qdrant",
+                  "rudimentary_baseline",
+                  "other"
+                ]
+              }
+            ],
+            "description": "Systems being compared in the run."
+          },
+          {
+            "name": "chunk_profile_ids",
+            "type": "array<objectId>",
+            "required": false
+          },
+          {
+            "name": "top_k_values",
+            "type": "array<int>",
+            "required": true
+          },
+          {
+            "name": "notes",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "started_at",
+            "type": "date",
+            "required": false
+          },
+          {
+            "name": "completed_at",
+            "type": "date",
+            "required": false
+          },
+          {
+            "name": "created_at",
+            "type": "date",
+            "required": true
+          }
+        ],
+        "embedded_documents": [
+          {
+            "name": "comparison_targets",
+            "why": "Small bounded list scoped to a single benchmark run; embedding keeps run definition self-contained."
+          }
+        ],
+        "references": [
+          {
+            "field": "tenant_id",
+            "collection": "tenants",
+            "why": "Runs are tenant/customer specific."
+          },
+          {
+            "field": "chunk_profile_ids",
+            "collection": "chunk_profiles",
+            "why": "Benchmark run may compare one or more chunking strategies."
+          }
+        ],
+        "relationships": [
+          {
+            "type": "many-to-one",
+            "to": "tenants",
+            "via": "tenant_id"
+          },
+          {
+            "type": "one-to-many",
+            "to": "queries",
+            "via": "queries.benchmark_run_id"
+          },
+          {
+            "type": "one-to-many",
+            "to": "query_results",
+            "via": "query_results.benchmark_run_id"
+          }
+        ],
+        "indexing": [
+          {
+            "name": "idx_benchmark_runs_tenant_status",
+            "kind": "regular",
+            "fields": [
+              "tenant_id",
+              "status",
+              "created_at"
+            ],
+            "reason": "Supports listing and managing benchmark sessions for a tenant."
+          }
+        ]
+      },
+      {
+        "name": "query_results",
+        "description": "Stores retrieval outputs and evaluation metrics per query per compared approach. This collection is the measurement backbone for precision/recall/top-k/latency comparisons requested in the POV.",
+        "traceability": [
+          "UC-4",
+          "FR-4",
+          "AI-4",
+          "AI-5",
+          "AI-6",
+          "SC-2",
+          "SC-3",
+          "SC-4",
+          "SC-5",
+          "SC-6",
+          "SC-7"
+        ],
+        "fields": [
+          {
+            "name": "_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "benchmark_run_id",
+            "type": "objectId",
+            "required": false
+          },
+          {
+            "name": "query_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "tenant_id",
+            "type": "objectId",
+            "required": true
+          },
+          {
+            "name": "approach",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "mongodb_voyage",
+              "elastic",
+              "opensearch",
+              "qdrant",
+              "rudimentary_baseline",
+              "other"
+            ]
+          },
+          {
+            "name": "chunk_profile_id",
+            "type": "objectId",
+            "required": false
+          },
+          {
+            "name": "retrieval_mode",
+            "type": "string",
+            "required": true,
+            "enum": [
+              "vector",
+              "lexical",
+              "hybrid"
+            ]
+          },
+          {
+            "name": "latency_ms",
+            "type": "double",
+            "required": true
+          },
+          {
+            "name": "top_k_requested",
+            "type": "int",
+            "required": true
+          },
+          {
+            "name": "results",
+            "type": "array<object>",
+            "required": true,
+            "fields": [
+              {
+                "name": "rank",
+                "type": "int",
+                "required": true
+              },
+              {
+                "name": "chunk_id",
+                "type": "objectId",
+                "required": false
+              },
+              {
+                "name": "document_id",
+                "type": "objectId",
+                "required": false
+              },
+              {
+                "name": "score",
+                "type": "double",
+                "required": false
+              },
+              {
+                "name": "rerank_score",
+                "type": "double",
+                "required": false
+              },
+              {
+                "name": "text_snippet",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "source_title",
+                "type": "string",
+                "required": false
+              },
+              {
+                "name": "is_ground_truth_match",
+                "type": "bool",
+                "required": false
+              }
+            ],
+            "description": "Ordered retrieval set for the query."
+          },
+          {
+            "name": "metrics",
+            "type": "object",
+            "required": false,
+            "fields": [
+              {
+                "name": "precision_at_k",
+                "type": "object",
+                "required": false
+              },
+              {
+                "name": "recall_at_k",
+                "type": "object",
+                "required": false
+              },
+              {
+                "name": "mrr",
+                "type": "double",
+                "required": false
+              },
+              {
+                "name": "ndcg",
+                "type": "double",
+                "required": false
+              }
+            ],
+            "description": "Evaluation metrics captured for this approach/query."
+          },
+          {
+            "name": "created_at",
+            "type": "date",
+            "required": true
+          }
+        ],
+        "embedded_documents": [
+          {
+            "name": "results",
+            "why": "Top-k result list is naturally scoped to a single query execution and bounded (top 1/5/10/20), so embedding avoids extra joins for benchmark analysis."
+          },
+          {
+            "name": "metrics",
+            "why": "Metrics are computed per result set and always read together with it."
+          }
+        ],
+        "references": [
+          {
+            "field": "benchmark_run_id",
+            "collection": "benchmark_runs",
+            "why": "Results may belong to a formal benchmark run."
+          },
+          {
+            "field": "query_id",
+            "collection": "queries",
+            "why": "Each result set answers one query."
+          },
+          {
+            "field": "tenant_id",
+            "collection": "tenants",
+            "why": "Tenant scoping for filtering and analysis."
+          },
+          {
+            "field": "chunk_profile_id",
+            "collection": "chunk_profiles",
+            "why": "Enables comparison across chunking strategies in the benchmark harness."
+          }
+        ],
+        "relationships": [
+          {
+            "type": "many-to-one",
+            "to": "queries",
+            "via": "query_id"
+          },
+          {
+            "type": "many-to-one",
+            "to": "benchmark_runs",
+            "via": "benchmark_run_id"
+          },
+          {
+            "type": "many-to-one",
+            "to": "chunk_profiles",
+            "via": "chunk_profile_id"
+          }
+        ],
+        "indexing": [
+          {
+            "name": "idx_results_run_query_approach_profile",
+            "kind": "regular",
+            "fields": [
+              "benchmark_run_id",
+              "query_id",
+              "approach",
+              "chunk_profile_id"
+            ],
+            "reason": "Supports side-by-side comparison of a query across systems and chunking strategies."
+          },
+          {
+            "name": "idx_results_tenant_approach_created",
+            "kind": "regular",
+            "fields": [
+              "tenant_id",
+              "approach",
+              "created_at"
+            ],
+            "reason": "Supports tenant-scoped analysis of recent benchmark executions by compared approach."
+          }
+        ]
+      }
+    ],
+    "design_notes": {
+      "embedding_vs_reference_rationale": [
+        {
+          "collection": "documents",
+          "decision": "Keep documents separate from chunks.",
+          "why": "Chunk volume is high and retrieval operates at chunk granularity; embedding chunks inside documents would create very large document growth and inefficient vector index maintenance."
+        },
+        {
+          "collection": "chunks",
+          "decision": "Store embedding vector directly on chunk.",
+          "why": "Embedding is only meaningful in context of the chunk retrieval unit and is queried together with chunk text/metadata for vector search."
+        },
+        {
+          "collection": "query_results",
+          "decision": "Embed top-k results and metrics.",
+          "why": "Top-k result sets are small and always consumed together for benchmark inspection and scoring."
+        },
+        {
+          "collection": "benchmark_runs",
+          "decision": "Embed comparison_targets.",
+          "why": "Short per-run configuration list; no independent lifecycle requiring a separate collection."
+        }
+      ],
+      "scope_notes": [
+        "Raw file binaries are not modeled in MongoDB because current-state integration explicitly mentions S3/raw object storage; model stores source_uri and extracted text instead.",
+        "No separate application-session or conversation database collection is introduced because AI-8 was explicitly removed as a requirement.",
+        "Access metadata is kept optional and lightweight on documents to reflect current-state tagging context without inventing a full authorization subsystem.",
+        "Chunk profile support is included because the POV explicitly needs side-by-side demonstration of chunking options, but it is treated as benchmark/demo configuration rather than a generalized product platform requirement."
+      ]
+    }
+  }
+}
