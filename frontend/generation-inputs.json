@@ -1,0 +1,2444 @@
+{
+  "frontend_contract": {
+    "app_shell": {
+      "primary_navigation": [
+        {
+          "label": "Tenants",
+          "route": "/tenants"
+        },
+        {
+          "label": "Active Tenant Overview",
+          "route": "/tenants/:tenantId"
+        },
+        {
+          "label": "Documents",
+          "route": "/tenants/:tenantId/documents"
+        },
+        {
+          "label": "Ingest Status",
+          "route": "/tenants/:tenantId/ingest-status"
+        },
+        {
+          "label": "Chunk Profiles",
+          "route": "/tenants/:tenantId/chunk-profiles"
+        },
+        {
+          "label": "Document Search",
+          "route": "/tenants/:tenantId/search"
+        },
+        {
+          "label": "Agent Memory",
+          "route": "/tenants/:tenantId/agent-memory"
+        },
+        {
+          "label": "Benchmarks",
+          "route": "/tenants/:tenantId/benchmarks"
+        }
+      ],
+      "cross_cutting_components": [
+        "TenantSwitcher",
+        "PageHeader",
+        "StatusBadge",
+        "ErrorBanner",
+        "EmptyState",
+        "LoadingSkeleton",
+        "ConfirmUnsavedChangesGuard",
+        "JsonInspector",
+        "TopKSelector",
+        "ApproachBadge",
+        "ChunkProfileBadge"
+      ]
+    },
+    "routes": [
+      {
+        "route": "/tenants",
+        "page_id": "tenant_list_page"
+      },
+      {
+        "route": "/tenants/new",
+        "page_id": "tenant_create_page"
+      },
+      {
+        "route": "/tenants/:tenantId",
+        "page_id": "tenant_overview_page"
+      },
+      {
+        "route": "/tenants/:tenantId/settings",
+        "page_id": "tenant_settings_page"
+      },
+      {
+        "route": "/tenants/:tenantId/documents",
+        "page_id": "document_list_page"
+      },
+      {
+        "route": "/tenants/:tenantId/documents/new",
+        "page_id": "document_create_page"
+      },
+      {
+        "route": "/tenants/:tenantId/documents/:documentId",
+        "page_id": "document_detail_page"
+      },
+      {
+        "route": "/tenants/:tenantId/documents/:documentId/edit",
+        "page_id": "document_edit_page"
+      },
+      {
+        "route": "/tenants/:tenantId/ingest-status",
+        "page_id": "ingest_status_page"
+      },
+      {
+        "route": "/tenants/:tenantId/chunk-profiles",
+        "page_id": "chunk_profile_list_page"
+      },
+      {
+        "route": "/tenants/:tenantId/chunk-profiles/new",
+        "page_id": "chunk_profile_create_page"
+      },
+      {
+        "route": "/tenants/:tenantId/documents/:documentId/chunks",
+        "page_id": "document_chunks_page"
+      },
+      {
+        "route": "/tenants/:tenantId/search",
+        "page_id": "document_search_page"
+      },
+      {
+        "route": "/tenants/:tenantId/search/history",
+        "page_id": "query_history_page"
+      },
+      {
+        "route": "/tenants/:tenantId/agent-memory",
+        "page_id": "agent_memory_search_page"
+      },
+      {
+        "route": "/tenants/:tenantId/benchmarks",
+        "page_id": "benchmark_run_list_page"
+      },
+      {
+        "route": "/tenants/:tenantId/benchmarks/new",
+        "page_id": "benchmark_run_create_page"
+      },
+      {
+        "route": "/tenants/:tenantId/benchmarks/:benchmarkRunId",
+        "page_id": "benchmark_run_detail_page"
+      },
+      {
+        "route": "/tenants/:tenantId/benchmarks/:benchmarkRunId/queries",
+        "page_id": "benchmark_queries_page"
+      },
+      {
+        "route": "/tenants/:tenantId/benchmarks/:benchmarkRunId/queries/new",
+        "page_id": "benchmark_query_create_page"
+      },
+      {
+        "route": "/tenants/:tenantId/benchmarks/:benchmarkRunId/queries/:queryId/comparison",
+        "page_id": "benchmark_query_comparison_page"
+      },
+      {
+        "route": "/tenants/:tenantId/benchmarks/:benchmarkRunId/summary",
+        "page_id": "benchmark_summary_page"
+      },
+      {
+        "route": "/tenants/:tenantId/benchmarks/:benchmarkRunId/wins",
+        "page_id": "benchmark_wins_page"
+      }
+    ],
+    "pages": [
+      {
+        "page_id": "tenant_list_page",
+        "title": "Tenants",
+        "purpose": "Entry screen to view available tenants and choose the isolation boundary for all POV activity.",
+        "data_requirements": [
+          "List of tenants with name, tenant_key, deployment model, cloud, status, timestamps."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "listTenants",
+            "usage": "Initial list and optional filtering by status."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Filter tenants by status",
+            "api": "listTenants"
+          },
+          {
+            "action": "Open tenant overview",
+            "api": null
+          },
+          {
+            "action": "Navigate to create tenant",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Initial full-page skeleton for tenant cards/table.",
+          "Inline spinner when changing status filter."
+        ],
+        "error_states": [
+          "List fetch failure with retry action.",
+          "Empty state when no tenants match filter."
+        ],
+        "components": [
+          "TenantTable",
+          "TenantStatusFilter",
+          "TenantCard",
+          "CreateTenantButton"
+        ]
+      },
+      {
+        "page_id": "tenant_create_page",
+        "title": "Create Tenant",
+        "purpose": "Create a new tenant record for a demo or benchmark environment.",
+        "data_requirements": [
+          "Tenant creation form fields: tenant_key, name, deployment_model, cloud, status."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "createTenant",
+            "usage": "Submit tenant creation form."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Enter tenant metadata",
+            "api": null
+          },
+          {
+            "action": "Create tenant",
+            "api": "createTenant"
+          },
+          {
+            "action": "Cancel and return to tenants list",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Submit button loading state during create request."
+        ],
+        "error_states": [
+          "Validation errors mapped to fields.",
+          "Conflict error when tenant_key already exists.",
+          "Generic create failure banner."
+        ],
+        "components": [
+          "TenantForm",
+          "EnumSelect",
+          "FormErrorSummary"
+        ]
+      },
+      {
+        "page_id": "tenant_overview_page",
+        "title": "Tenant Overview",
+        "purpose": "Tenant-scoped landing page summarizing the tenant and linking to core POV workflows.",
+        "data_requirements": [
+          "Tenant detail.",
+          "Recent retrieval-ready documents.",
+          "Recent benchmark runs."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getTenant",
+            "usage": "Load tenant metadata."
+          },
+          {
+            "operationId": "listRetrievalReadyDocuments",
+            "usage": "Show recent ready documents with small limit."
+          },
+          {
+            "operationId": "listBenchmarkRuns",
+            "usage": "Show recent benchmark runs with small limit."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Navigate to documents, search, chunk profiles, benchmarks, agent memory",
+            "api": null
+          },
+          {
+            "action": "Open tenant settings",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Overview cards skeleton while all panels load."
+        ],
+        "error_states": [
+          "Tenant not found state.",
+          "Partial panel errors for documents or benchmarks while keeping page usable."
+        ],
+        "components": [
+          "TenantSummaryCard",
+          "QuickActionPanel",
+          "RecentDocumentsPanel",
+          "RecentBenchmarkRunsPanel"
+        ]
+      },
+      {
+        "page_id": "tenant_settings_page",
+        "title": "Tenant Settings",
+        "purpose": "Edit mutable tenant metadata.",
+        "data_requirements": [
+          "Current tenant fields and editable values."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getTenant",
+            "usage": "Populate form."
+          },
+          {
+            "operationId": "updateTenant",
+            "usage": "Persist edits."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Edit name/deployment model/cloud/status",
+            "api": null
+          },
+          {
+            "action": "Save settings",
+            "api": "updateTenant"
+          }
+        ],
+        "loading_states": [
+          "Form skeleton while loading current tenant.",
+          "Save button loading state during patch."
+        ],
+        "error_states": [
+          "Tenant not found.",
+          "Validation errors.",
+          "Immutable field attempt should not be possible in UI because tenant_key is read-only.",
+          "Generic update failure."
+        ],
+        "components": [
+          "TenantForm",
+          "ReadOnlyField",
+          "SaveBar"
+        ]
+      },
+      {
+        "page_id": "document_list_page",
+        "title": "Documents",
+        "purpose": "Browse tenant documents that are retrieval-ready or all documents depending on filters, including agent memory records if desired.",
+        "data_requirements": [
+          "Document list fields returned by list endpoint.",
+          "Tenant detail for page context."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getTenant",
+            "usage": "Context header."
+          },
+          {
+            "operationId": "listRetrievalReadyDocuments",
+            "usage": "Load list with filters such as ready_only, document_types, source_systems, created_after, limit."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Filter by retrieval-ready/all",
+            "api": "listRetrievalReadyDocuments"
+          },
+          {
+            "action": "Filter by document type/source system/date",
+            "api": "listRetrievalReadyDocuments"
+          },
+          {
+            "action": "Open document detail",
+            "api": null
+          },
+          {
+            "action": "Navigate to create document metadata",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Table skeleton on first load.",
+          "Inline refresh spinner on filter changes."
+        ],
+        "error_states": [
+          "List fetch failure.",
+          "Tenant not found.",
+          "Empty state for no documents."
+        ],
+        "components": [
+          "DocumentTable",
+          "DocumentFilterBar",
+          "ReadyOnlyToggle",
+          "DocumentTypeMultiSelect",
+          "SourceSystemMultiSelect",
+          "DateFilter"
+        ]
+      },
+      {
+        "page_id": "document_create_page",
+        "title": "Register Document / Memory Record",
+        "purpose": "Capture document metadata, extracted text, source URI, and access tags for demo ingestion. This replaces raw file upload because the API does not support binary upload.",
+        "data_requirements": [
+          "Tenant context.",
+          "Document create fields including document_type, source_system, source_uri, mime_type, file_name, raw_text, structured_attributes, access tags, ingest_status, is_agent_memory."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getTenant",
+            "usage": "Context header."
+          },
+          {
+            "operationId": "createDocument",
+            "usage": "Submit new document metadata/text record."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Choose document type and source system",
+            "api": null
+          },
+          {
+            "action": "Paste extracted/raw text or enter source URI",
+            "api": null
+          },
+          {
+            "action": "Set structured attributes JSON",
+            "api": null
+          },
+          {
+            "action": "Set access user/group ids",
+            "api": null
+          },
+          {
+            "action": "Set ingest status",
+            "api": null
+          },
+          {
+            "action": "Create document",
+            "api": "createDocument"
+          }
+        ],
+        "loading_states": [
+          "Submit loading state during create."
+        ],
+        "error_states": [
+          "Field validation errors.",
+          "Tenant not found.",
+          "Informational hint that binary files cannot be uploaded through this UI/API contract."
+        ],
+        "components": [
+          "DocumentForm",
+          "RawTextEditor",
+          "StructuredAttributesEditor",
+          "AccessTagsEditor",
+          "IngestStatusSelect",
+          "UnsupportedUploadNotice"
+        ]
+      },
+      {
+        "page_id": "document_detail_page",
+        "title": "Document Detail",
+        "purpose": "Inspect full document metadata, extracted text, access tags, and ingest state.",
+        "data_requirements": [
+          "Complete document record for tenant/document id."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getDocument",
+            "usage": "Load document details."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "View metadata and raw text",
+            "api": null
+          },
+          {
+            "action": "Navigate to edit document",
+            "api": null
+          },
+          {
+            "action": "Open chunk inspection page",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Detail skeleton while fetching."
+        ],
+        "error_states": [
+          "Invalid id.",
+          "Document not found.",
+          "Failed load banner."
+        ],
+        "components": [
+          "DocumentMetadataPanel",
+          "RawTextPanel",
+          "AccessTagsPanel",
+          "StructuredAttributesPanel",
+          "IngestStatusBadge"
+        ]
+      },
+      {
+        "page_id": "document_edit_page",
+        "title": "Edit Document",
+        "purpose": "Update document metadata, extracted text, ingest status, errors, or access tags as processing progresses.",
+        "data_requirements": [
+          "Current document record and editable fields."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getDocument",
+            "usage": "Populate form."
+          },
+          {
+            "operationId": "updateDocument",
+            "usage": "Persist edits."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Modify title/source URI/mime type/file name/raw text/structured attributes/access/ingest status/errors",
+            "api": null
+          },
+          {
+            "action": "Save changes",
+            "api": "updateDocument"
+          }
+        ],
+        "loading_states": [
+          "Form skeleton while fetching.",
+          "Save button loading state during patch."
+        ],
+        "error_states": [
+          "Validation errors.",
+          "Document not found.",
+          "Generic update failure."
+        ],
+        "components": [
+          "DocumentForm",
+          "StructuredAttributesEditor",
+          "AccessTagsEditor",
+          "IngestErrorsEditor",
+          "SaveBar"
+        ]
+      },
+      {
+        "page_id": "ingest_status_page",
+        "title": "Ingest Status",
+        "purpose": "Monitor document processing progress and identify failures in the ingestion pipeline.",
+        "data_requirements": [
+          "Documents with title, file_name, type, source_system, ingest_status, ingest_errors, updated_at."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "listDocumentIngestStatuses",
+            "usage": "Load ingest pipeline status list with optional created_after and limit."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Filter by created_after",
+            "api": "listDocumentIngestStatuses"
+          },
+          {
+            "action": "Refresh statuses",
+            "api": "listDocumentIngestStatuses"
+          },
+          {
+            "action": "Open failed document for inspection/edit",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Status table skeleton.",
+          "Manual refresh spinner."
+        ],
+        "error_states": [
+          "List fetch failure.",
+          "Empty state when no ingest records exist."
+        ],
+        "components": [
+          "IngestStatusTable",
+          "IngestStatusBadge",
+          "IngestErrorPopover",
+          "RefreshButton"
+        ]
+      },
+      {
+        "page_id": "chunk_profile_list_page",
+        "title": "Chunk Profiles",
+        "purpose": "View active chunking strategies available to the tenant for comparison and navigation into chunk inspection workflows.",
+        "data_requirements": [
+          "List of chunk profiles with strategy and parameters."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "listChunkProfiles",
+            "usage": "Fetch active chunk profiles."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Open create chunk profile page",
+            "api": null
+          },
+          {
+            "action": "Use a chunk profile in search via navigation context",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Card/list skeleton while loading."
+        ],
+        "error_states": [
+          "Invalid tenant id.",
+          "List fetch failure.",
+          "Empty state when no profiles exist."
+        ],
+        "components": [
+          "ChunkProfileList",
+          "ChunkProfileCard",
+          "StrategyBadge",
+          "ParametersViewer"
+        ]
+      },
+      {
+        "page_id": "chunk_profile_create_page",
+        "title": "Create Chunk Profile",
+        "purpose": "Define a tenant-specific chunking strategy for POV comparison across fixed-length, recursive, semantic, or contextual chunking.",
+        "data_requirements": [
+          "Tenant context.",
+          "Chunk profile create fields: name, strategy, parameters, is_active."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "createChunkProfile",
+            "usage": "Persist tenant-specific chunk profile."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Select strategy",
+            "api": null
+          },
+          {
+            "action": "Enter name and JSON parameters",
+            "api": null
+          },
+          {
+            "action": "Set active flag",
+            "api": null
+          },
+          {
+            "action": "Create chunk profile",
+            "api": "createChunkProfile"
+          }
+        ],
+        "loading_states": [
+          "Submit loading state."
+        ],
+        "error_states": [
+          "Validation errors.",
+          "Tenant not found.",
+          "Generic create failure."
+        ],
+        "components": [
+          "ChunkProfileForm",
+          "StrategySelect",
+          "JsonParametersEditor"
+        ]
+      },
+      {
+        "page_id": "document_chunks_page",
+        "title": "Document Chunks by Profile",
+        "purpose": "Inspect the ordered chunks generated for a document under a chosen chunk profile to compare chunking strategies.",
+        "data_requirements": [
+          "Document detail for title/context.",
+          "Available chunk profiles.",
+          "Chunks for selected document/profile."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getDocument",
+            "usage": "Context header."
+          },
+          {
+            "operationId": "listChunkProfiles",
+            "usage": "Populate chunk profile selector."
+          },
+          {
+            "operationId": "getDocumentChunksByProfile",
+            "usage": "Fetch ordered chunks for selected profile."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Select chunk profile",
+            "api": "getDocumentChunksByProfile"
+          },
+          {
+            "action": "Inspect chunk text and sizes",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Profile selector loading.",
+          "Chunk list skeleton when changing profile."
+        ],
+        "error_states": [
+          "Document not found.",
+          "Missing/invalid chunk_profile_id.",
+          "No chunks available for selected profile."
+        ],
+        "components": [
+          "ChunkProfileSelector",
+          "ChunkList",
+          "ChunkCard",
+          "TokenCountBadge",
+          "CharCountBadge"
+        ]
+      },
+      {
+        "page_id": "document_search_page",
+        "title": "Document Search",
+        "purpose": "Run ad hoc semantic vector search or hybrid search over tenant documents, optionally first creating a query record for traceability.",
+        "data_requirements": [
+          "Tenant context.",
+          "Available chunk profiles.",
+          "Optional retrieval-ready document list for scope selection.",
+          "Optional recent ad hoc query history preview."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getTenant",
+            "usage": "Context header."
+          },
+          {
+            "operationId": "listChunkProfiles",
+            "usage": "Chunk profile selector."
+          },
+          {
+            "operationId": "listRetrievalReadyDocuments",
+            "usage": "Document scope picker."
+          },
+          {
+            "operationId": "createQuery",
+            "usage": "Optionally create traceable ad hoc query before execution."
+          },
+          {
+            "operationId": "vectorSearchDocuments",
+            "usage": "Execute vector search mode."
+          },
+          {
+            "operationId": "hybridSearchDocuments",
+            "usage": "Execute hybrid search mode."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Choose retrieval mode: vector or hybrid",
+            "api": null
+          },
+          {
+            "action": "Optionally create/save ad hoc query record",
+            "api": "createQuery"
+          },
+          {
+            "action": "Enter query text",
+            "api": null
+          },
+          {
+            "action": "Select chunk profile",
+            "api": null
+          },
+          {
+            "action": "Limit scope to chosen documents",
+            "api": "listRetrievalReadyDocuments"
+          },
+          {
+            "action": "Set vector params top_k and num_candidates",
+            "api": "vectorSearchDocuments"
+          },
+          {
+            "action": "Set hybrid metadata filters/document scope/top_k",
+            "api": "hybridSearchDocuments"
+          },
+          {
+            "action": "Execute search",
+            "api": "vectorSearchDocuments|hybridSearchDocuments"
+          },
+          {
+            "action": "Open query history page",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Chunk profiles/documents loading on page load.",
+          "Search results skeleton while execution is running."
+        ],
+        "error_states": [
+          "Validation errors for missing query text/chunk profile/top_k.",
+          "Embedding generation failure for vector search if server-side embedding fails.",
+          "Chunk profile not found.",
+          "No results state."
+        ],
+        "components": [
+          "SearchModeTabs",
+          "AdHocQueryComposer",
+          "ChunkProfileSelector",
+          "DocumentScopePicker",
+          "MetadataFilterEditor",
+          "VectorSearchControls",
+          "HybridSearchControls",
+          "SearchResultsList",
+          "ResultCard"
+        ]
+      },
+      {
+        "page_id": "query_history_page",
+        "title": "Recent Ad Hoc Queries",
+        "purpose": "Review recent ad hoc queries created for the tenant demo session.",
+        "data_requirements": [
+          "Query history entries with query_text, document_scope, created_by, created_at."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "listRecentAdHocQueries",
+            "usage": "Fetch recent history with optional created_after and limit."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Filter history by created_after",
+            "api": "listRecentAdHocQueries"
+          },
+          {
+            "action": "Copy past query text into search workflow",
+            "api": null
+          },
+          {
+            "action": "Navigate back to search",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Table/list skeleton while loading."
+        ],
+        "error_states": [
+          "History fetch failure.",
+          "Empty state when no recent queries exist."
+        ],
+        "components": [
+          "QueryHistoryTable",
+          "DateFilter",
+          "CopyQueryButton"
+        ]
+      },
+      {
+        "page_id": "agent_memory_search_page",
+        "title": "Agent Memory Search",
+        "purpose": "Search conversation-derived memory documents while supplying user/group access context.",
+        "data_requirements": [
+          "Tenant context.",
+          "Chunk profiles.",
+          "Optional agent memory documents list for operator awareness."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getTenant",
+            "usage": "Context header."
+          },
+          {
+            "operationId": "listChunkProfiles",
+            "usage": "Chunk profile selector."
+          },
+          {
+            "operationId": "listRetrievalReadyDocuments",
+            "usage": "Optional awareness list filtered client-side to is_agent_memory documents if present in response."
+          },
+          {
+            "operationId": "createQuery",
+            "usage": "Optionally create ad hoc query for traceability."
+          },
+          {
+            "operationId": "searchAgentMemory",
+            "usage": "Execute access-aware memory retrieval."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Enter query text",
+            "api": null
+          },
+          {
+            "action": "Optionally create/save ad hoc query record",
+            "api": "createQuery"
+          },
+          {
+            "action": "Enter required user_id and optional group_ids",
+            "api": null
+          },
+          {
+            "action": "Select chunk profile and optional memory_type hint",
+            "api": null
+          },
+          {
+            "action": "Set top_k and num_candidates",
+            "api": null
+          },
+          {
+            "action": "Execute agent memory search",
+            "api": "searchAgentMemory"
+          }
+        ],
+        "loading_states": [
+          "Initial supporting data skeleton.",
+          "Results skeleton during retrieval."
+        ],
+        "error_states": [
+          "Missing user_id validation.",
+          "Embedding generation failure.",
+          "Chunk profile not found.",
+          "No results state."
+        ],
+        "components": [
+          "AgentIdentityInput",
+          "GroupIdsInput",
+          "MemoryTypeInput",
+          "ChunkProfileSelector",
+          "SearchResultsList",
+          "AccessScopeHelpText"
+        ]
+      },
+      {
+        "page_id": "benchmark_run_list_page",
+        "title": "Benchmark Runs",
+        "purpose": "Browse benchmark runs for a tenant and enter evaluation dashboards.",
+        "data_requirements": [
+          "Benchmark run list with name, status, comparison targets, chunk profiles ids, top_k_values, started/completed timestamps."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "listBenchmarkRuns",
+            "usage": "Load benchmark runs with optional status filter and limit."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Filter by status",
+            "api": "listBenchmarkRuns"
+          },
+          {
+            "action": "Open benchmark run detail",
+            "api": null
+          },
+          {
+            "action": "Navigate to create benchmark run",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "List skeleton on initial load."
+        ],
+        "error_states": [
+          "List fetch failure.",
+          "Empty state when no runs exist."
+        ],
+        "components": [
+          "BenchmarkRunTable",
+          "BenchmarkStatusFilter",
+          "BenchmarkRunCard",
+          "CreateBenchmarkRunButton"
+        ]
+      },
+      {
+        "page_id": "benchmark_run_create_page",
+        "title": "Create Benchmark Run",
+        "purpose": "Define a benchmark run for side-by-side POV evaluation, including comparison targets, chunk profiles, and top-k values.",
+        "data_requirements": [
+          "Available chunk profiles for selection.",
+          "Benchmark form fields."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "listChunkProfiles",
+            "usage": "Populate selectable chunk profiles."
+          },
+          {
+            "operationId": "createBenchmarkRun",
+            "usage": "Create benchmark run."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Enter run name and notes",
+            "api": null
+          },
+          {
+            "action": "Choose status and timestamps",
+            "api": null
+          },
+          {
+            "action": "Add comparison targets",
+            "api": null
+          },
+          {
+            "action": "Select chunk profiles",
+            "api": null
+          },
+          {
+            "action": "Set top-k values",
+            "api": null
+          },
+          {
+            "action": "Create benchmark run",
+            "api": "createBenchmarkRun"
+          }
+        ],
+        "loading_states": [
+          "Chunk profile selector loading.",
+          "Submit loading state."
+        ],
+        "error_states": [
+          "Validation errors.",
+          "Tenant not found.",
+          "Generic create failure."
+        ],
+        "components": [
+          "BenchmarkRunForm",
+          "ComparisonTargetsEditor",
+          "ChunkProfileMultiSelect",
+          "TopKMultiValueInput"
+        ]
+      },
+      {
+        "page_id": "benchmark_run_detail_page",
+        "title": "Benchmark Run Detail",
+        "purpose": "View and update benchmark configuration and navigate to queries, summary, wins, and comparisons.",
+        "data_requirements": [
+          "Benchmark run detail with chunk profile definitions."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getBenchmarkRunDetail",
+            "usage": "Load benchmark configuration."
+          },
+          {
+            "operationId": "updateBenchmarkRun",
+            "usage": "Update mutable benchmark fields such as status, notes, targets, top-k values, timestamps."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Review configuration",
+            "api": null
+          },
+          {
+            "action": "Edit run metadata/status",
+            "api": "updateBenchmarkRun"
+          },
+          {
+            "action": "Go to benchmark queries",
+            "api": null
+          },
+          {
+            "action": "Go to summary",
+            "api": null
+          },
+          {
+            "action": "Go to wins",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Detail skeleton while loading.",
+          "Save/loading indicator during patch."
+        ],
+        "error_states": [
+          "Invalid id.",
+          "Benchmark run not found.",
+          "Validation errors on update."
+        ],
+        "components": [
+          "BenchmarkRunHeader",
+          "BenchmarkConfigPanel",
+          "BenchmarkRunEditForm",
+          "BenchmarkNavTabs"
+        ]
+      },
+      {
+        "page_id": "benchmark_queries_page",
+        "title": "Benchmark Queries",
+        "purpose": "Review the question set and ground truth associated with a benchmark run.",
+        "data_requirements": [
+          "Benchmark run detail for context.",
+          "Benchmark queries list with expected answer and ground truth references."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getBenchmarkRunDetail",
+            "usage": "Context header."
+          },
+          {
+            "operationId": "listBenchmarkQueries",
+            "usage": "Load benchmark queries for the run."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Open create benchmark query page",
+            "api": null
+          },
+          {
+            "action": "Open side-by-side comparison for a query",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Queries table skeleton."
+        ],
+        "error_states": [
+          "Run not found.",
+          "No benchmark queries yet.",
+          "Failed load banner."
+        ],
+        "components": [
+          "BenchmarkQueryTable",
+          "GroundTruthSummaryCell",
+          "CreateBenchmarkQueryButton"
+        ]
+      },
+      {
+        "page_id": "benchmark_query_create_page",
+        "title": "Create Benchmark Query",
+        "purpose": "Add a benchmark question and optional ground truth references to a benchmark run.",
+        "data_requirements": [
+          "Benchmark run context.",
+          "Optional retrieval-ready documents for document scope and ground truth selection. Note: no chunk listing endpoint exists by run, so chunk-level ground truth can only be entered by known ids or derived from document chunk inspection screens."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getBenchmarkRunDetail",
+            "usage": "Context header."
+          },
+          {
+            "operationId": "listRetrievalReadyDocuments",
+            "usage": "Populate candidate document scope / ground truth document picker."
+          },
+          {
+            "operationId": "createQuery",
+            "usage": "Create benchmark query tied to benchmark_run_id."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Enter benchmark question text",
+            "api": null
+          },
+          {
+            "action": "Enter expected answer text",
+            "api": null
+          },
+          {
+            "action": "Select ground truth document ids",
+            "api": null
+          },
+          {
+            "action": "Enter ground truth chunk ids manually if known",
+            "api": null
+          },
+          {
+            "action": "Set document scope",
+            "api": null
+          },
+          {
+            "action": "Create benchmark query",
+            "api": "createQuery"
+          }
+        ],
+        "loading_states": [
+          "Context and document picker loading.",
+          "Submit loading state."
+        ],
+        "error_states": [
+          "Validation errors.",
+          "Benchmark run not found.",
+          "Limitation note that no API exists to browse all chunks for arbitrary ground truth selection except per-document chunk inspection."
+        ],
+        "components": [
+          "BenchmarkQueryForm",
+          "GroundTruthDocumentPicker",
+          "GroundTruthChunkIdInput",
+          "DocumentScopeEditor",
+          "ExpectedAnswerEditor"
+        ]
+      },
+      {
+        "page_id": "benchmark_query_comparison_page",
+        "title": "Benchmark Query Comparison",
+        "purpose": "Display side-by-side persisted results for one benchmark query across approaches and chunk profiles.",
+        "data_requirements": [
+          "Comparison records with results, metrics, chunk profile name/strategy."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getBenchmarkQueryComparison",
+            "usage": "Load side-by-side comparisons for selected query."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Inspect per-approach ranks, scores, rerank scores, snippets, and ground-truth matches",
+            "api": null
+          },
+          {
+            "action": "Navigate to summary or wins dashboards",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Comparison skeleton while loading."
+        ],
+        "error_states": [
+          "Invalid id.",
+          "Query or run not found.",
+          "Empty state when no persisted query_results exist for this query."
+        ],
+        "components": [
+          "ComparisonApproachColumns",
+          "MetricsComparisonTable",
+          "ResultRankingPanel",
+          "GroundTruthMatchBadge"
+        ]
+      },
+      {
+        "page_id": "benchmark_summary_page",
+        "title": "Benchmark Summary",
+        "purpose": "Show aggregate benchmark metrics by approach, retrieval mode, chunk profile, and top-k.",
+        "data_requirements": [
+          "Benchmark summary rows including avg latency, avg MRR, avg NDCG, avg precision/recall at 1/5/10/20, query count."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getBenchmarkSummary",
+            "usage": "Load summary aggregates."
+          },
+          {
+            "operationId": "getBenchmarkRunDetail",
+            "usage": "Optional header/context for selected run."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Filter/sort summary client-side by approach, top-k, chunk profile, retrieval mode",
+            "api": null
+          },
+          {
+            "action": "Navigate to individual query comparisons",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Summary table/chart skeleton."
+        ],
+        "error_states": [
+          "Run not found.",
+          "No summary data because query results have not been persisted yet."
+        ],
+        "components": [
+          "BenchmarkSummaryTable",
+          "MetricHighlightCards",
+          "ApproachFilter",
+          "TopKFilter",
+          "ChunkProfileFilter"
+        ]
+      },
+      {
+        "page_id": "benchmark_wins_page",
+        "title": "Benchmark Wins",
+        "purpose": "Identify benchmark queries where MongoDB/Voyage beats a baseline on relevance and/or latency.",
+        "data_requirements": [
+          "Wins list with per-query MongoDB/Voyage metrics, baseline metrics, and boolean win indicators."
+        ],
+        "api_consumed": [
+          {
+            "operationId": "getBenchmarkWins",
+            "usage": "Load win/loss records."
+          },
+          {
+            "operationId": "listBenchmarkQueries",
+            "usage": "Optional query text lookup if the UI wants to enrich query ids with texts; API supports it via run-scoped query list."
+          }
+        ],
+        "user_actions": [
+          {
+            "action": "Review win indicators by query",
+            "api": null
+          },
+          {
+            "action": "Open query comparison detail for a specific win/loss",
+            "api": null
+          }
+        ],
+        "loading_states": [
+          "Wins list skeleton."
+        ],
+        "error_states": [
+          "Run not found.",
+          "No wins data because benchmark comparisons are not yet persisted."
+        ],
+        "components": [
+          "WinsTable",
+          "WinIndicatorGroup",
+          "MetricDeltaCell",
+          "OpenComparisonLink"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "component_id": "TenantSwitcher",
+        "purpose": "Global selector to jump between tenants from any tenant-scoped route.",
+        "props": [
+          "tenants",
+          "selectedTenantId"
+        ]
+      },
+      {
+        "component_id": "TenantForm",
+        "purpose": "Reusable create/edit form for tenant metadata.",
+        "props": [
+          "mode",
+          "initialValues",
+          "onSubmit"
+        ]
+      },
+      {
+        "component_id": "DocumentForm",
+        "purpose": "Reusable create/edit form for document metadata and ingest fields.",
+        "props": [
+          "mode",
+          "initialValues",
+          "onSubmit"
+        ]
+      },
+      {
+        "component_id": "StructuredAttributesEditor",
+        "purpose": "JSON editor for structured metadata filters/attributes.",
+        "props": [
+          "value",
+          "onChange",
+          "schemaHint"
+        ]
+      },
+      {
+        "component_id": "AccessTagsEditor",
+        "purpose": "Entry UI for document-level user_ids and group_ids.",
+        "props": [
+          "userIds",
+          "groupIds",
+          "onChange"
+        ]
+      },
+      {
+        "component_id": "ChunkProfileForm",
+        "purpose": "Create form for chunk profiles.",
+        "props": [
+          "initialValues",
+          "onSubmit"
+        ]
+      },
+      {
+        "component_id": "ChunkProfileSelector",
+        "purpose": "Select one chunk profile from active profiles.",
+        "props": [
+          "profiles",
+          "selectedProfileId",
+          "onChange"
+        ]
+      },
+      {
+        "component_id": "SearchModeTabs",
+        "purpose": "Switch between vector and hybrid search modes.",
+        "props": [
+          "mode",
+          "onChange"
+        ]
+      },
+      {
+        "component_id": "AdHocQueryComposer",
+        "purpose": "Compose query text and optionally persist a query record before search.",
+        "props": [
+          "queryText",
+          "createdBy",
+          "documentScope",
+          "onCreateQuery"
+        ]
+      },
+      {
+        "component_id": "DocumentScopePicker",
+        "purpose": "Pick specific documents and/or source systems to limit search scope.",
+        "props": [
+          "documents",
+          "selectedDocumentIds",
+          "selectedSourceSystems",
+          "onChange"
+        ]
+      },
+      {
+        "component_id": "MetadataFilterEditor",
+        "purpose": "JSON editor for hybrid search metadata_filters.",
+        "props": [
+          "value",
+          "onChange"
+        ]
+      },
+      {
+        "component_id": "VectorSearchControls",
+        "purpose": "Input controls for top_k, num_candidates, query_id, user/group access where relevant.",
+        "props": [
+          "topK",
+          "numCandidates",
+          "queryId",
+          "onChange"
+        ]
+      },
+      {
+        "component_id": "HybridSearchControls",
+        "purpose": "Input controls for top_k, query_id, metadata filters, scope.",
+        "props": [
+          "topK",
+          "queryId",
+          "metadataFilters",
+          "documentScope",
+          "onChange"
+        ]
+      },
+      {
+        "component_id": "SearchResultsList",
+        "purpose": "Display ranked retrieval results with snippets and metadata.",
+        "props": [
+          "results",
+          "retrievalMode",
+          "loading"
+        ]
+      },
+      {
+        "component_id": "IngestStatusTable",
+        "purpose": "Table for monitoring document ingest progress and failures.",
+        "props": [
+          "documents",
+          "onRefresh"
+        ]
+      },
+      {
+        "component_id": "BenchmarkRunForm",
+        "purpose": "Create/edit form for benchmark run setup.",
+        "props": [
+          "mode",
+          "chunkProfiles",
+          "initialValues",
+          "onSubmit"
+        ]
+      },
+      {
+        "component_id": "ComparisonTargetsEditor",
+        "purpose": "Manage array of comparison target entries for a benchmark run.",
+        "props": [
+          "targets",
+          "onChange"
+        ]
+      },
+      {
+        "component_id": "BenchmarkQueryForm",
+        "purpose": "Create benchmark queries with expected answers and ground truth references.",
+        "props": [
+          "benchmarkRunId",
+          "documents",
+          "onSubmit"
+        ]
+      },
+      {
+        "component_id": "ComparisonApproachColumns",
+        "purpose": "Render side-by-side approach result sets for one benchmark query.",
+        "props": [
+          "comparisons"
+        ]
+      },
+      {
+        "component_id": "BenchmarkSummaryTable",
+        "purpose": "Tabular aggregate metrics viewer for benchmark summary rows.",
+        "props": [
+          "summaryRows",
+          "filters",
+          "sorting"
+        ]
+      },
+      {
+        "component_id": "WinsTable",
+        "purpose": "Display where MongoDB/Voyage outperforms baseline on benchmark metrics.",
+        "props": [
+          "wins",
+          "queryLookup"
+        ]
+      }
+    ],
+    "frontend_notes_on_api_constraints": [
+      "No route should imply binary file upload/download because the API explicitly excludes raw binary storage; use metadata/text/source URI registration language throughout the UI.",
+      "No page should promise automatic benchmark execution across Elastic/OpenSearch/Qdrant because the API only exposes MongoDB-side search execution plus generic query_result persistence. Side-by-side benchmark screens are read/write for stored results, not orchestrators for external systems.",
+      "No dedicated delete screens/actions should be included because delete endpoints are not part of the API contract.",
+      "No authentication, authorization admin, or agent session management screens should be invented because the API contract explicitly excludes them.",
+      "Ground-truth chunk selection is partially constrained: chunk browsing is available only per document and chunk profile via getDocumentChunksByProfile, not as a benchmark-wide chunk search experience.",
+      "Reranking can be displayed only if rerank_score is present in persisted query_results; there is no standalone rerank execution endpoint.",
+      "Because there is no endpoint to list query_results directly, benchmark analysis screens must rely on the provided summary, wins, and query comparison endpoints rather than an all-results browser."
+    ]
+  },
+  "requirements": {
+    "business_objectives": {
+      "BO-1": {
+        "description": "Evaluate AI capabilities that combine structured and unstructured data.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-5"
+          ],
+          "endpoints": [
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "BO-2": {
+        "description": "Find a scalable lower-cost solution for unstructured or hybrid structured/unstructured retrieval workloads.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks",
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-5",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments",
+            "hybridSearchDocuments",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "document_search_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "BO-3": {
+        "description": "Reduce storage and indexing cost for embeddings/search workloads compared with the current Elastic-based approach.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks",
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "BO-4": {
+        "description": "Achieve very low-latency retrieval over large document sets for downstream agent use.",
+        "mapped_to": {
+          "collections": [
+            "chunks",
+            "documents",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-6",
+            "QP-11"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments",
+            "searchAgentMemory",
+            "createQueryResult",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "document_search_page",
+            "agent_memory_search_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "BO-5": {
+        "description": "Validate vendor claims with real demos, benchmarks, comparisons, and hands-on proof before making decisions.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "queries",
+            "query_results",
+            "chunk_profiles"
+          ],
+          "query_patterns": [
+            "QP-8",
+            "QP-9",
+            "QP-10",
+            "QP-11",
+            "QP-12",
+            "QP-14"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "listBenchmarkRuns",
+            "getBenchmarkRunDetail",
+            "createQuery",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_list_page",
+            "benchmark_run_detail_page",
+            "benchmark_queries_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      }
+    },
+    "functional_requirements": {
+      "FR-1": {
+        "description": "Support document search over unstructured content provided by customers, including PDFs and other uploaded document types.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-4",
+            "QP-5"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listRetrievalReadyDocuments",
+            "vectorSearchDocuments",
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_list_page",
+            "document_search_page"
+          ]
+        }
+      },
+      "FR-2": {
+        "description": "Support use cases that combine structured and unstructured data in retrieval workflows.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-5"
+          ],
+          "endpoints": [
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "FR-3": {
+        "description": "Support agent memory/context retrieval from conversation-derived documents.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-6"
+          ],
+          "endpoints": [
+            "createDocument",
+            "searchAgentMemory"
+          ],
+          "pages": [
+            "document_create_page",
+            "agent_memory_search_page"
+          ]
+        }
+      },
+      "FR-4": {
+        "description": "Support retrieval and re-ranking so relevant results can be surfaced to agents.",
+        "mapped_to": {
+          "collections": [
+            "chunks",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-5",
+            "QP-6",
+            "QP-10"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments",
+            "hybridSearchDocuments",
+            "searchAgentMemory",
+            "createQueryResult",
+            "getBenchmarkQueryComparison"
+          ],
+          "pages": [
+            "document_search_page",
+            "agent_memory_search_page",
+            "benchmark_query_comparison_page"
+          ]
+        }
+      },
+      "FR-5": {
+        "description": "Handle large-scale vector retrieval across approximately one million documents in a single index.",
+        "mapped_to": {
+          "collections": [
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-4"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "FR-6": {
+        "description": "Support a POV/demo workflow where users can upload documents during the session and ask questions against them.",
+        "mapped_to": {
+          "collections": [
+            "tenants",
+            "documents",
+            "chunk_profiles",
+            "queries",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-2",
+            "QP-3",
+            "QP-4",
+            "QP-5",
+            "QP-13"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listRetrievalReadyDocuments",
+            "listDocumentIngestStatuses",
+            "listChunkProfiles",
+            "createQuery",
+            "vectorSearchDocuments",
+            "hybridSearchDocuments",
+            "listRecentAdHocQueries"
+          ],
+          "pages": [
+            "document_create_page",
+            "ingest_status_page",
+            "document_search_page",
+            "query_history_page",
+            "tenant_overview_page"
+          ]
+        }
+      },
+      "FR-7": {
+        "description": "Demonstrate multiple chunking strategies for document processing, including fixed-length, recursive, semantic, and contextual chunking.",
+        "mapped_to": {
+          "collections": [
+            "chunk_profiles",
+            "chunks",
+            "benchmark_runs"
+          ],
+          "query_patterns": [
+            "QP-3",
+            "QP-7",
+            "QP-14"
+          ],
+          "endpoints": [
+            "listChunkProfiles",
+            "createChunkProfile",
+            "getDocumentChunksByProfile",
+            "getBenchmarkRunDetail"
+          ],
+          "pages": [
+            "chunk_profile_list_page",
+            "chunk_profile_create_page",
+            "document_chunks_page",
+            "benchmark_run_detail_page"
+          ]
+        }
+      },
+      "FR-8": {
+        "description": "Support isolated per-customer SaaS deployments in addition to some multi-tenant services.",
+        "mapped_to": {
+          "collections": [
+            "tenants"
+          ],
+          "query_patterns": [],
+          "endpoints": [
+            "createTenant",
+            "listTenants",
+            "getTenant",
+            "updateTenant"
+          ],
+          "pages": [
+            "tenant_list_page",
+            "tenant_create_page",
+            "tenant_overview_page",
+            "tenant_settings_page"
+          ]
+        }
+      },
+      "FR-9": {
+        "description": "Support tagging or access association at the document level for context records tied to users and tenants.",
+        "mapped_to": {
+          "collections": [
+            "documents"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-6"
+          ],
+          "endpoints": [
+            "createDocument",
+            "updateDocument",
+            "searchAgentMemory",
+            "vectorSearchDocuments"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_edit_page",
+            "agent_memory_search_page",
+            "document_detail_page"
+          ]
+        }
+      }
+    },
+    "ai_genai_requirements": {
+      "AI-1": {
+        "description": "Provide vector search capabilities for unstructured document retrieval.",
+        "mapped_to": {
+          "collections": [
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-4",
+            "QP-5"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments",
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "AI-2": {
+        "description": "Enable embeddings generation and retrieval workflows for customer documents.",
+        "mapped_to": {
+          "collections": [
+            "chunks",
+            "documents"
+          ],
+          "query_patterns": [
+            "QP-4"
+          ],
+          "endpoints": [
+            "vectorSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page",
+            "ingest_status_page"
+          ]
+        }
+      },
+      "AI-3": {
+        "description": "Support PDF/document ingestion where users may upload unpredictable document types and still expect useful retrieval outcomes.",
+        "mapped_to": {
+          "collections": [
+            "documents"
+          ],
+          "query_patterns": [
+            "QP-2"
+          ],
+          "endpoints": [
+            "createDocument",
+            "updateDocument",
+            "listDocumentIngestStatuses"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_edit_page",
+            "ingest_status_page"
+          ]
+        }
+      },
+      "AI-4": {
+        "description": "Support retrieval accuracy benchmarking using customer-provided questions/ground truth.",
+        "mapped_to": {
+          "collections": [
+            "queries",
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-9",
+            "QP-10",
+            "QP-11"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQuery",
+            "createQueryResult",
+            "listBenchmarkQueries",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_queries_page",
+            "benchmark_query_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "AI-5": {
+        "description": "Evaluate retrieval quality using top-k based measures up to top 20.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-11"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "AI-6": {
+        "description": "Compare retrieval precision, recall, and latency during the evaluation.",
+        "mapped_to": {
+          "collections": [
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "AI-7": {
+        "description": "Potentially support multimodal retrieval in the future, but it is not part of the requested benchmark flow for the next demo.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "out_of_scope_in_current_authoritative_artifacts"
+        }
+      },
+      "AI-8": {
+        "description": "Support agent conversation/session data as a backend database use case.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "not_modeled_per_authoritative_data_model_scope_note"
+        }
+      }
+    },
+    "use_cases": {
+      "UC-1": {
+        "description": "Document Search over Unstructured Content",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunk_profiles",
+            "chunks",
+            "queries"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-2",
+            "QP-3",
+            "QP-4",
+            "QP-5",
+            "QP-7",
+            "QP-13"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listRetrievalReadyDocuments",
+            "listDocumentIngestStatuses",
+            "listChunkProfiles",
+            "getDocumentChunksByProfile",
+            "createQuery",
+            "vectorSearchDocuments",
+            "hybridSearchDocuments",
+            "listRecentAdHocQueries"
+          ],
+          "pages": [
+            "document_list_page",
+            "document_create_page",
+            "document_detail_page",
+            "document_search_page",
+            "document_chunks_page",
+            "query_history_page",
+            "ingest_status_page"
+          ]
+        }
+      },
+      "UC-2": {
+        "description": "Agent Memory Retrieval",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks",
+            "queries"
+          ],
+          "query_patterns": [
+            "QP-6",
+            "QP-13"
+          ],
+          "endpoints": [
+            "createDocument",
+            "createQuery",
+            "searchAgentMemory",
+            "listRecentAdHocQueries"
+          ],
+          "pages": [
+            "agent_memory_search_page",
+            "document_create_page",
+            "query_history_page"
+          ]
+        }
+      },
+      "UC-3": {
+        "description": "Hybrid Structured and Unstructured Retrieval",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-5"
+          ],
+          "endpoints": [
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_search_page"
+          ]
+        }
+      },
+      "UC-4": {
+        "description": "POV Benchmark Evaluation",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "queries",
+            "query_results",
+            "chunk_profiles",
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-3",
+            "QP-7",
+            "QP-8",
+            "QP-9",
+            "QP-10",
+            "QP-11",
+            "QP-12",
+            "QP-14"
+          ],
+          "endpoints": [
+            "listRetrievalReadyDocuments",
+            "listChunkProfiles",
+            "getDocumentChunksByProfile",
+            "createBenchmarkRun",
+            "listBenchmarkRuns",
+            "getBenchmarkRunDetail",
+            "updateBenchmarkRun",
+            "createQuery",
+            "listBenchmarkQueries",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_list_page",
+            "benchmark_run_create_page",
+            "benchmark_run_detail_page",
+            "benchmark_queries_page",
+            "benchmark_query_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page",
+            "document_chunks_page"
+          ]
+        }
+      }
+    },
+    "success_criteria": {
+      "SC-1": {
+        "description": "Show that document search works well on customer-like documents uploaded during the demo.",
+        "mapped_to": {
+          "collections": [
+            "documents",
+            "chunks"
+          ],
+          "query_patterns": [
+            "QP-2",
+            "QP-4",
+            "QP-5"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listDocumentIngestStatuses",
+            "vectorSearchDocuments",
+            "hybridSearchDocuments"
+          ],
+          "pages": [
+            "document_create_page",
+            "ingest_status_page",
+            "document_search_page"
+          ]
+        }
+      },
+      "SC-2": {
+        "description": "Demonstrate retrieval at the right latency for the document-search use case.",
+        "mapped_to": {
+          "collections": [
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11"
+          ],
+          "endpoints": [
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "SC-3": {
+        "description": "Provide side-by-side comparison against a baseline or current system to determine whether there is significant difference.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkQueryComparison"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_query_comparison_page"
+          ]
+        }
+      },
+      "SC-4": {
+        "description": "Demonstrate raw retrieval accuracy and speed using the same documents across systems.",
+        "mapped_to": {
+          "collections": [
+            "queries",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11"
+          ],
+          "endpoints": [
+            "listBenchmarkQueries",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_queries_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "SC-5": {
+        "description": "Evaluate precision, recall, and latency metrics in the demo/POV.",
+        "mapped_to": {
+          "collections": [
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-11"
+          ],
+          "endpoints": [
+            "createQueryResult",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "SC-6": {
+        "description": "Assess top-k retrieval quality at top 1, 5, 10, and 20.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-11"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkSummary"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_summary_page"
+          ]
+        }
+      },
+      "SC-7": {
+        "description": "Validate that MongoDB/Voyage offers better results than the customer\u2019s current or simple baseline approach rather than merely matching it.",
+        "mapped_to": {
+          "collections": [
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_query_comparison_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "SC-8": {
+        "description": "Potential future success criterion: support around 400-500 concurrent requests, though this is not the immediate focus of the POV.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "not_explicitly_designed_in_current_authoritative_artifacts"
+        }
+      }
+    },
+    "integrations": {
+      "INT-1": {
+        "description": "Integrate with or replace parts of the current Elastic/Elastic Cloud based search and embeddings workflow.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "INT-2": {
+        "description": "Coexist with Postgres, which is currently used as the application database and for some metadata.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "coexistence_only_not_directly_modeled"
+        }
+      },
+      "INT-3": {
+        "description": "Coexist with S3, which currently stores raw documents.",
+        "mapped_to": {
+          "collections": [
+            "documents"
+          ],
+          "query_patterns": [],
+          "endpoints": [
+            "createDocument",
+            "updateDocument",
+            "getDocument"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_edit_page",
+            "document_detail_page"
+          ]
+        }
+      },
+      "INT-4": {
+        "description": "Fit into environments that already use OpenSearch for some customer deployments/use cases.",
+        "mapped_to": {
+          "collections": [
+            "benchmark_runs",
+            "query_results"
+          ],
+          "query_patterns": [
+            "QP-10",
+            "QP-11",
+            "QP-12"
+          ],
+          "endpoints": [
+            "createBenchmarkRun",
+            "createQueryResult",
+            "getBenchmarkQueryComparison",
+            "getBenchmarkSummary",
+            "getBenchmarkWins"
+          ],
+          "pages": [
+            "benchmark_run_create_page",
+            "benchmark_query_comparison_page",
+            "benchmark_summary_page",
+            "benchmark_wins_page"
+          ]
+        }
+      },
+      "INT-5": {
+        "description": "Work within a multi-cloud environment across AWS, GCP, and/or other clouds.",
+        "mapped_to": {
+          "collections": [
+            "tenants"
+          ],
+          "query_patterns": [],
+          "endpoints": [
+            "createTenant",
+            "listTenants",
+            "getTenant",
+            "updateTenant"
+          ],
+          "pages": [
+            "tenant_list_page",
+            "tenant_create_page",
+            "tenant_settings_page"
+          ]
+        }
+      },
+      "INT-6": {
+        "description": "Potentially align with Vertex AI-based session management already in use for agents.",
+        "mapped_to": {
+          "collections": [],
+          "query_patterns": [],
+          "endpoints": [],
+          "pages": [],
+          "status": "not_directly_modeled_in_current_scope"
+        }
+      },
+      "INT-7": {
+        "description": "Support content originating from connectors such as Slack, Confluence, Jira, Google Sheets, CSVs, and PDFs.",
+        "mapped_to": {
+          "collections": [
+            "documents"
+          ],
+          "query_patterns": [
+            "QP-1",
+            "QP-2"
+          ],
+          "endpoints": [
+            "createDocument",
+            "listRetrievalReadyDocuments",
+            "listDocumentIngestStatuses"
+          ],
+          "pages": [
+            "document_create_page",
+            "document_list_page",
+            "ingest_status_page"
+          ]
+        }
+      }
+    }
+  }
+}
